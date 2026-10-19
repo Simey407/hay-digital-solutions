@@ -1,0 +1,8 @@
+# Publish only the static website, never repository documentation or tooling.
+*
+!index.html
+!styles.css
+!privacy.html
+!terms.html
+!payment-health/
+!payment-health/*.html
