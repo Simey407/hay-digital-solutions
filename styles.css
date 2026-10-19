@@ -196,3 +196,17 @@ a:focus-visible{outline:3px solid var(--teal-dark);outline-offset:5px;border-rad
   footer{gap:16px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Readable policy pages share the homepage identity and navigation. */
+.policy-page{padding:64px 28px 80px}
+.policy-content{max-width:760px;margin:0 auto;color:var(--body);overflow-wrap:anywhere}
+.policy-content h1,.policy-content h2{font-family:var(--serif);font-weight:500;color:var(--ink);letter-spacing:-.035em;line-height:1.12}
+.policy-content h1{font-size:clamp(38px,5vw,58px);margin:0 0 20px}
+.policy-content h2{font-size:28px;margin:36px 0 12px}
+.policy-content p{margin:0 0 18px}
+.policy-content .policy-date{font-size:14px;margin-bottom:28px}
+.policy-content a{text-underline-offset:3px}
+@media(max-width:760px){
+  .policy-page{padding:42px 22px 54px}
+  .policy-content h2{font-size:25px;margin-top:30px}
+}
