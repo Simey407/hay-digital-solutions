@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#18272b"><title>Ba’ Battle | Kirkwall Map Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#16272d;--ink:#f3eee5;--sand:#dfcfae;--line:#698078}*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#101d24;font-family:system-ui,-apple-system,sans-serif;color:var(--ink)}
+main{height:100dvh;max-width:680px;margin:auto;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+header{height:53px;min-height:53px;padding:7px 13px 7px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #6b716b;gap:9px}
+header strong{font-family:Georgia,serif;font-size:19px;letter-spacing:.3px;white-space:nowrap}header span{font-size:9px;letter-spacing:1.3px;color:#d6c49f;display:block;margin-top:2px}
+#status{padding:5px 8px;border:1px solid #768780;border-radius:7px;line-height:1.2;font-size:10px;color:#cbd8d5;max-width:152px;text-align:right}
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;background:#d9dbd1;touch-action:none}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+#notice{position:absolute;left:17px;right:17px;top:32%;background:#183039ed;color:#f2e8d6;padding:17px;border:1px solid #a99b7d;border-radius:12px;font-size:13px;text-align:center;line-height:1.55;pointer-events:none;box-shadow:0 8px 20px #13222950}
+#notice[hidden]{display:none}
+#legend{position:absolute;top:12px;left:12px;max-width:220px;background:#14292de0;border:1px solid #8c9d93;border-radius:8px;padding:9px 10px;pointer-events:none}
+#legend strong{font-size:12px;color:#ffe4b2}#legend span{display:block;font-size:10px;line-height:1.35;color:#eff0e3;margin-top:3px}
+#credit{position:absolute;right:9px;bottom:9px;background:#142d32e0;font-size:9px;padding:6px;border-radius:5px;color:#e8f0e7}
+#credit a{color:#b4e5e2}
+#compass{position:absolute;right:12px;top:10px;color:#203037;font-size:11px;font-weight:1000;text-align:center;background:#e9dfcfdd;border-radius:50%;border:1px solid #b1a48a;width:30px;height:30px;line-height:27px}
+footer{flex-shrink:0;padding:9px 10px max(10px,env(safe-area-inset-bottom));background:#172a2f;border-top:1px solid #7d8c81}
+.tools{display:grid;grid-template-columns:1fr 1fr .86fr;gap:8px}button{min-height:49px;font-size:12px;font-weight:850;border:1px solid #b39e79;border-radius:10px;background:#334850;color:#fff2d8;cursor:pointer}button.primary{background:#e5bf80;color:#2b302f;border-color:#f0d7ac}button:active{transform:scale(.98)}
+#hint{font-size:10px;color:#acbdb7;text-align:center;margin-top:7px;min-height:14px}
+</style></head><body><main>
+<header><div><strong>BA’ BATTLE</strong><span>KIRKWALL · MAP LAB</span></div><div id="status" role="status">Loading real map…</div></header>
+<section id="stage" aria-label="North-up directly overhead map of Kirkwall"><canvas id="map"></canvas><div id="compass">N↑</div><div id="notice">Loading mapped streets, closes and building footprints from OpenStreetMap…</div><div id="credit">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · ODbL</div></section>
+<footer><div class="tools"><button class="primary" id="overview">TOWN VIEW</button><button id="street">STREET VIEW</button><button id="reload">RELOAD MAP</button></div><div id="hint">Drag to pan. Pinch to zoom. No invented streets or buildings.</div></footer>
+</main>
+<script>
+(()=>{'use strict';
+const $=s=>document.getElementById(s), canvas=$('map'),ctx=canvas.getContext('2d',{alpha:false});
+const MERCAT={lat:58.98159,lon:-2.96045}, CATHEDRAL={lat:58.98144,lon:-2.95961};
+const WEST=-2.969,NORTH=58.9873,EAST=-2.954,SOUTH=58.9766;
+const BBOX=`${WEST},${SOUTH},${EAST},${NORTH}`, CACHE='ba-kirkwall-actual-osm-map-lab-20261123';
+const cos=Math.cos(MERCAT.lat*Math.PI/180), toXY=p=>({x:(p.lon-MERCAT.lon)*111320*cos,y:(MERCAT.lat-p.lat)*111320});
+let ways=[], buildings=[], water=[], graphCount=0, mapReady=false,viewport={x:0,y:0,scale:.69},screen={w:400,h:600},pointer=new Map(),dragFrom=null,needDraw=true,frame=0;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const zoomLevels={overview:.52,street:1.46};
+function toScreen(p){const xy=toXY(p);return {x:(xy.x-viewport.x)*viewport.scale+screen.w/2,y:(xy.y-viewport.y)*viewport.scale+screen.h/2}}
+function xyScreen(p){return {x:(p.x-viewport.x)*viewport.scale+screen.w/2,y:(p.y-viewport.y)*viewport.scale+screen.h/2}}
+function size(){const r=$('stage').getBoundingClientRect();screen={w:r.width,h:r.height};const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(screen.w*d);canvas.height=Math.round(screen.h*d);ctx.setTransform(d,0,0,d,0,0);needDraw=true}
+function path(pts){ctx.beginPath();for(let i=0;i<pts.length;i++){const v=xyScreen(pts[i]);i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y)}}
+function visible(poly){let minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;for(const p of poly){const q=xyScreen(p);minx=Math.min(q.x,minx);maxx=Math.max(q.x,maxx);miny=Math.min(q.y,miny);maxy=Math.max(q.y,maxy)}return maxx>=-28&&minx<=screen.w+28&&maxy>=-28&&miny<=screen.h+28}
+function drawPolygon(poly,fill,stroke){if(!visible(poly))return;path(poly);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.lineWidth=Math.max(.65,viewport.scale*.65);ctx.strokeStyle=stroke;ctx.stroke()}}
+function styleRoad(kind){if(['pedestrian','living_street'].includes(kind))return {w:7,fill:'#cfbea5'};if(['footway','path','steps','cycleway'].includes(kind))return {w:2.1,fill:'#c3b49d'};if(['service','track'].includes(kind))return {w:3.4,fill:'#cec8b6'};if(['primary','secondary','tertiary'].includes(kind))return {w:9.8,fill:'#a2aaae'};return {w:6,fill:'#c7c5b7'}}
+function label(text,p,important=false){const q=xyScreen(p);if(q.x<30||q.x>screen.w-30||q.y<48||q.y>screen.h-33)return;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=important?'900 12px system-ui':'700 10px system-ui';const w=ctx.measureText(text).width;ctx.fillStyle=important?'#263b40d9':'#e7e7d9d9';ctx.beginPath();ctx.roundRect(q.x-w/2-5,q.y-10,w+10,20,4);ctx.fill();ctx.fillStyle=important?'#ffe9bb':'#475251';ctx.fillText(text,q.x,q.y+.5)}
+function draw(){frame++;ctx.fillStyle='#cbd7ca';ctx.fillRect(0,0,screen.w,screen.h);
+ if(!mapReady)return;
+ // All features are projected from OSM latitude/longitude with north-up y-axis.
+ // No rotated camera, perspective, invented roof rectangles or replacement grid.
+ for(const poly of water)drawPolygon(poly,'#7eafbe','#4e91a5');
+ for(let i=0;i<buildings.length;i++)drawPolygon(buildings[i],['#888986','#9f9790','#8f9d93','#9d9a8b'][i%4],'#767e7b');
+ for(const w of ways){if(!visible(w.p))continue;const st=styleRoad(w.kind);path(w.p);ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=clamp((st.w+2)*viewport.scale,2.5,18);ctx.strokeStyle='#ede9dc';ctx.stroke();path(w.p);ctx.lineWidth=clamp(st.w*viewport.scale,1.2,14);ctx.strokeStyle=st.fill;ctx.stroke()}
+ // Named road labels are attached to the OSM way, not guessed screen coordinates.
+ const seen=new Set();let written=0;
+ const named=ways.filter(w=>w.name&&w.p.length>1).sort((a,b)=>{const near=w=>Math.min(...w.p.map(p=>Math.hypot(p.x-viewport.x,p.y-viewport.y)));return near(a)-near(b)});
+ for(const w of named){if(written>=9)break;if(seen.has(w.name))continue;const i=Math.floor(w.p.length/2);const pt=w.p[i];const q=xyScreen(pt);if(q.x<50||q.x>screen.w-50||q.y<72||q.y>screen.h-45)continue;if(Math.hypot(q.x-screen.w/2,q.y-screen.h/2)<56)continue;seen.add(w.name);written++;label(w.name.toUpperCase().slice(0,23),pt)}
+ const at=toScreen(MERCAT);if(at.x>-15&&at.x<screen.w+15&&at.y>-15&&at.y<screen.h+15){ctx.beginPath();ctx.arc(at.x,at.y,6,0,7);ctx.fillStyle='#e2a45a';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#33363a';ctx.stroke();label('MERCAT CROSS',toXY({lat:MERCAT.lat+.00018,lon:MERCAT.lon}),true)}
+ const cath=toScreen(CATHEDRAL);if(cath.x>0&&cath.x<screen.w&&cath.y>0&&cath.y<screen.h&&viewport.scale>.65)label('ST MAGNUS CATHEDRAL',toXY({lat:CATHEDRAL.lat-.00014,lon:CATHEDRAL.lon+.00035}),true);
+ }
+function requestDraw(){needDraw=true}
+function loop(){if(needDraw){draw();needDraw=false}requestAnimationFrame(loop)}
+const validWay=w=>w.type==='way'&&w.tags&&Array.isArray(w.geometry)&&w.geometry.length>=2;
+function parse(json){ways=[];buildings=[];water=[];graphCount=0;for(const w of json.elements||[]){if(!validWay(w))continue;const t=w.tags||{},pts=w.geometry.map(p=>toXY(p));if(t.highway&&t.access!=='private'&&t.access!=='no'&&t.area!=='yes'&&!['construction','proposed','raceway','motorway'].includes(t.highway)){ways.push({p:pts,kind:t.highway,name:t.name||''});graphCount+=pts.length-1;}if(t.building&&pts.length>3&&buildings.length<4500)buildings.push(pts);if(t.natural==='water'&&pts.length>3&&water.length<150)water.push(pts)}if(ways.length<25||buildings.length<25)throw Error(`Incomplete mapping data (${ways.length} roads, ${buildings.length} buildings)`);mapReady=true;$('notice').hidden=true;$('status').textContent=`OSM geometry · ${ways.length} ways`;$('status').style.color='#a8ecc6';$('hint').textContent=`${ways.length} mapped street ways · ${buildings.length} actual building outlines · Drag / pinch to explore`;requestDraw()}
+function parseXML(txt){const dom=new DOMParser().parseFromString(txt,'application/xml');if(dom.querySelector('parsererror'))throw Error('OSM XML parse failed');const nodes=new Map();dom.querySelectorAll('node[id][lat][lon]').forEach(n=>nodes.set(n.getAttribute('id'),{lat:+n.getAttribute('lat'),lon:+n.getAttribute('lon')}));let elements=[];dom.querySelectorAll('way').forEach(w=>{const tags={};w.querySelectorAll('tag').forEach(t=>tags[t.getAttribute('k')]=t.getAttribute('v'));if(!tags.highway&&!tags.building&&tags.natural!=='water')return;const geometry=[...w.querySelectorAll('nd')].map(n=>nodes.get(n.getAttribute('ref'))).filter(Boolean);elements.push({type:'way',tags,geometry})});return {elements}}
+async function get(url,init={}){const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),13000);try{const r=await fetch(url,{...init,signal:ctrl.signal});if(!r.ok)throw Error(`${r.status}`);return r}finally{clearTimeout(timer)}}
+async function load(){mapReady=false;ways=[];buildings=[];water=[];$('status').textContent='Loading OSM…';$('status').style.color='#ecddbb';$('notice').hidden=false;$('notice').textContent='Loading exact street centerlines, lanes and building footprints from OpenStreetMap…';requestDraw();
+ try{const saved=localStorage.getItem(CACHE);if(saved){parse(JSON.parse(saved));$('status').textContent+=' · saved';return}}catch(e){console.warn('Cached map unusable',e);try{localStorage.removeItem(CACHE)}catch{}}
+ const api=`https://api.openstreetmap.org/api/0.6/map?bbox=${BBOX}`;
+ const bb=`${SOUTH},${WEST},${NORTH},${EAST}`;
+ const query=`[out:json][timeout:25];(way["highway"](${bb});way["building"](${bb});way["natural"="water"](${bb}););out geom;`;
+ const sources=[async()=>parseXML(await (await get(api)).text()), async()=>await (await get('https://overpass.kumi.systems/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(query)})).json(),async()=>await (await get('https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(query)})).json()];
+ let error='No source responded';for(const getSource of sources){try{const data=await getSource();parse(data);try{localStorage.setItem(CACHE,JSON.stringify(data))}catch{}return}catch(e){error=String(e);console.info('Map provider issue',error)}}
+ $('notice').hidden=false;$('notice').textContent='Authentic Kirkwall map data could not be loaded. No fictional streets have been substituted. Connect to the internet and tap RELOAD MAP.';$('status').textContent='Map unavailable';$('hint').textContent='This version deliberately never falls back to an invented map.';console.warn('Map failed',error);}
+function preset(k){viewport.x=0;viewport.y=k==='overview'?-30:0;viewport.scale=zoomLevels[k];requestDraw()}
+$('overview').onclick=()=>preset('overview');$('street').onclick=()=>preset('street');$('reload').onclick=()=>{try{localStorage.removeItem(CACHE)}catch{}load()};
+const pt=e=>{const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();pointer.set(e.pointerId,pt(e));canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!pointer.has(e.pointerId))return;const old=pointer.get(e.pointerId),now=pt(e);if(pointer.size===1){viewport.x-=(now.x-old.x)/viewport.scale;viewport.y-=(now.y-old.y)/viewport.scale}else if(pointer.size===2){const other=[...pointer.entries()].find(([id])=>id!==e.pointerId)?.[1];if(other){const before=Math.hypot(old.x-other.x,old.y-other.y),after=Math.hypot(now.x-other.x,now.y-other.y);if(before>8)viewport.scale=clamp(viewport.scale*after/before,.24,5)}}pointer.set(e.pointerId,now);requestDraw()});
+function release(e){pointer.delete(e.pointerId)}canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
+canvas.addEventListener('wheel',e=>{e.preventDefault();viewport.scale=clamp(viewport.scale*(e.deltaY<0?1.12:.88),.24,5);requestDraw()},{passive:false});
+addEventListener('resize',size);size();loop();load();
+window.__baMapDebug=()=>({mapReady,roadWays:ways.length,buildingOutlines:buildings.length,waterPolygons:water.length,graphSegments:graphCount,zoom:viewport.scale,centerWorld:{x:viewport.x,y:viewport.y}});
+})();
+</script></body></html>
