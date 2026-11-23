@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"><meta name="theme-color" content="#071521"><title>BA' BATTLE V10 | Rival Tactics</title>
+<style>
+:root{--bg:#071522;--card:#112a37;--line:#355463;--ink:#eef3ef;--muted:#aac1c9;--gold:#f7c86e;--up:#f5a35d;--down:#70c3e7;--green:#78dfae}*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:#06121c}button{font:inherit;cursor:pointer;touch-action:manipulation}.shell{max-width:630px;margin:auto;min-height:100dvh;display:flex;flex-direction:column;border-inline:1px solid #294452;background:var(--bg)}.top{display:flex;align-items:center;justify-content:space-between;background:#0e2531;padding:10px 13px;gap:8px;min-height:62px}.brand{font-size:21px;letter-spacing:.6px;font-weight:1000;line-height:1}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.7px;margin-top:6px}.utility{border:1px solid #4e6a77;border-radius:9px;background:#25424e;color:white;font-size:11px;font-weight:800;padding:9px 11px}.score{background:#081c28;border-top:1px solid #24404d;border-bottom:1px solid #24404d;padding:8px 14px}.topscore{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:850;letter-spacing:.8px;gap:8px}.topscore strong{font-size:13px}.up{color:var(--up)}.down{color:var(--down)}.fightbar{height:17px;border-radius:100px;background:linear-gradient(90deg,#e99b58,#273d4a 49%,#273d4a 51%,#5bb4de);position:relative;margin:9px 0 4px;border:1px solid #556b74;overflow:hidden}.fightbar:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:#f6e1b6ad}.marker{position:absolute;left:50%;top:1px;width:15px;height:13px;background:var(--gold);border:2px solid #fff4c9;border-radius:50%;transform:translateX(-50%);transition:left .1s}.scorebottom{display:flex;justify-content:space-between;font-size:10px;color:#c2d4d9;gap:8px}.mapbox{min-height:345px;height:min(52dvh,590px);flex:1;position:relative;overflow:hidden;touch-action:none;user-select:none;background:#1c3741}canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:absolute;top:11px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}.pill{border-radius:12px;border:1px solid #6e8b95aa;background:#071b27e8;backdrop-filter:blur(5px);padding:8px 10px;color:#f7f6ea;font-weight:950;font-size:11px;box-shadow:0 4px 10px #0003}.pill small{display:block;color:#b5ccd7;font-size:10px;font-weight:650;max-width:210px;margin-top:3px}.clock{font-variant-numeric:tabular-nums;font-size:19px}.hints{position:absolute;bottom:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px;pointer-events:none}.source{background:#051621d9;border-radius:7px;padding:6px 8px;font-size:10px;max-width:230px;line-height:1.35;pointer-events:auto}.source a{color:#a6dfff}.minilabel{max-width:150px;text-align:right;font-size:10px;background:#051621d9;border-radius:7px;padding:6px 8px;font-weight:800}.toast{position:absolute;left:13px;right:13px;top:26%;text-align:center;font-size:20px;font-weight:1000;color:#fff3c3;text-shadow:0 3px 9px #091720;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .14s,transform .14s}.toast.show{opacity:1;transform:translateY(0)}.bottom{padding:11px 12px max(14px,env(safe-area-inset-bottom));border-top:1px solid #385362;background:#0b2230}.pressure{display:grid;grid-template-columns:1fr auto;gap:7px;margin-bottom:7px;font-weight:850;font-size:11px}.meter{height:9px;border-radius:99px;background:#324b58;overflow:hidden;margin-bottom:8px}.meter>div{height:100%;width:0;background:linear-gradient(90deg,#d88339,#ffe8a6);border-radius:99px;transition:width .12s}.meter.blue{height:6px}.meter.blue>div{background:linear-gradient(90deg,#4e9aca,#82dfd5)}.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.ability{border:1px solid #526f7b;background:#1b3947;border-radius:11px;color:#f1f9fa;min-height:51px;display:flex;flex-direction:column;gap:2px;justify-content:center;align-items:center;font-size:12px;font-weight:900;padding:6px 2px}.ability small{font-size:9px;font-weight:700;color:#bfd1d9}.ability:disabled{opacity:.42}.ability.ready{background:#4e442f;border-color:var(--gold);color:#ffe7b5}.squadrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}.mini{background:#193748;border:1px solid #587381;border-radius:10px;color:#f0f7fa;padding:10px 4px;font-weight:900;font-size:11px}.mini:disabled{opacity:.4}.mini.selected{background:#6d5a37;border-color:var(--gold);color:#fff5ce}.action{width:100%;padding:13px 10px;margin-top:9px;background:linear-gradient(#ffdf93,#dfa251);border:2px solid #ffe7ab;border-radius:13px;color:#28201b;font-weight:1000;font-size:22px;box-shadow:0 4px 0 #89612d}.action:active{transform:translateY(3px);box-shadow:0 1px 0 #89612d}.statehint{text-align:center;font-size:10px;color:#bad0d6;margin:9px 0 0}.overlay{position:absolute;inset:0;z-index:10;background:linear-gradient(150deg,#071723f8,#142c38ef);display:flex;align-items:center;justify-content:center;padding:17px;overflow-y:auto}.overlay.hidden{display:none}.modal{width:100%;max-width:450px;text-align:center}.eyebrow{font-size:11px;letter-spacing:2px;color:#f7ce85;text-transform:uppercase;font-weight:1000}.modal h1{font-size:clamp(35px,10vw,53px);font-weight:1000;letter-spacing:-1px;line-height:.95;margin:5px 0 10px}.modal p{font-size:13px;color:#c4d7dc;line-height:1.55;max-width:370px;margin:9px auto 16px}.teamrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.team{padding:15px 10px;border:2px solid #526b77;border-radius:13px;background:#203c4c;color:white;font-weight:1000;font-size:18px;min-height:95px}.team small{font-size:10px;display:block;color:#bad0da;margin-top:8px}.team.selected{border-color:#fbe3ad;box-shadow:0 0 0 2px #f9d88d25}.primary{width:100%;border:0;background:#f4c576;color:#242020;font-weight:1000;font-size:18px;padding:15px;border-radius:12px}.footnote{font-size:11px!important;color:#95b4c2!important}.rulechips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:14px 0}.rulechips span{background:#264755;border:1px solid #526b78;padding:7px 10px;border-radius:9px;font-size:10px;font-weight:750}.resultscore{font-size:42px;color:var(--gold);font-weight:1000}.secondary{background:#213e4a;color:#f1f6f8;border:1px solid #66818c;border-radius:12px;padding:12px 13px;font-weight:900;font-size:12px}.best{font-size:11px;color:#b9cbd3;margin:12px 0}.best strong{color:#ffe5ac}@media(max-height:710px){.mapbox{min-height:265px}.bottom{padding-top:8px}.ability{min-height:44px}.mini{padding:8px 3px}.action{padding:10px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.difficultyrow{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0 13px}.difficulty{background:#1b3443;color:#d4e6ed;border:1px solid #527180;padding:11px 5px;border-radius:10px;font-size:12px;font-weight:950}.difficulty small{display:block;font-size:9px;margin-top:4px;color:#a8bdc9}.difficulty.active{background:#594128;border:2px solid #f6cb7b;color:#fff3cb}.counterbar{display:none;align-items:center;justify-content:space-between;gap:10px;background:#382c28;border:1px solid #ec9871;border-radius:10px;padding:7px 9px;margin:5px 0 8px;color:#ffe3cb;font-size:11px;font-weight:950}.counterbar.show{display:flex}.counterbar button{background:#eac27a;color:#221b13;font-weight:1000;padding:9px 11px;border:0;border-radius:8px;min-width:120px}.counterbar button:disabled{opacity:.45}.battle-alert{position:absolute;z-index:3;top:66px;left:50%;transform:translateX(-50%);max-width:90%;min-width:190px;text-align:center;padding:7px 12px;border-radius:10px;background:#622b20e8;color:#fff4d0;border:1px solid #ecac6e;font-size:11px;font-weight:950;letter-spacing:.5px;opacity:0;pointer-events:none;transition:opacity .12s}.battle-alert.show{opacity:1}
+#push.bracing{background:linear-gradient(#c0e4ff,#74b0d2);border-color:#d0ecff;color:#0d283b;box-shadow:0 4px 0 #3e7792}.team.selected{outline:1px solid #fff4bd}.scorebottom{font-variant-numeric:tabular-nums}.mapbox:focus-within{outline:2px solid #d9bf87;outline-offset:-3px}
+@media(max-width:420px){.top{gap:4px}.utility{padding:8px 7px;font-size:10px}.brand{font-size:18px}.topscore{font-size:10px}.scorebottom{font-size:9px}}
+
+.route-header{display:flex;justify-content:space-between;gap:7px;margin:9px 0 5px;font-size:10px;font-weight:950;color:#e9debb;letter-spacing:.4px}.route-header span:last-child{font-size:10px;color:#b3cad3;text-align:right;letter-spacing:0}
+.steerrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.steer{min-width:0;border:1px solid #608491;background:#153442;color:#ebf4f2;padding:9px 4px;border-radius:10px;font-size:12px;font-weight:950}.steer small{display:block;font-size:9px;line-height:1.25;margin-top:3px;color:#b9c9d1;min-height:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.steer.active{background:#594b2a;border-color:#f6d488;color:#fff0c8;box-shadow:inset 0 0 0 1px #bd9359}.steer:disabled{opacity:.42}.steer:focus-visible{outline:2px solid #ffe39b;outline-offset:2px}
+@media(max-height:710px){.route-header{margin:6px 0 3px}.steer{padding:6px 3px}.mapbox{min-height:235px}}
+
+.ai-intel{font-size:10px;line-height:1.35;font-weight:850;color:#d4e7e6;border:1px solid #486a76;background:#123341;border-radius:9px;margin:6px 0;padding:8px 9px;min-height:29px}
+.ai-intel.threat{background:#493027;border-color:#d99a6c;color:#ffebc6}
+.ai-intel.feint{background:#264432;border-color:#81c7a0;color:#e3ffdf}
+/* V8: touch-first golf-style throw-up minigame. */
+.overlay.throw-screen{position:fixed;inset:0;z-index:100;max-width:630px;margin-inline:auto;overflow-y:auto;align-items:center!important;background:linear-gradient(150deg,#071723fa,#142c38fc)}
+.overlay.throw-screen .modal{max-width:450px}
+@media(max-height:620px){.overlay.throw-screen{align-items:flex-start!important}}
+.throw-modal{width:100%;max-width:450px;padding:2px 1px 12px;text-align:center}
+.throw-modal h2{font-size:clamp(22px,6vw,30px);line-height:1.1;margin:4px 0 7px}
+.throw-modal .desc{font-size:12px;color:#c6d8df;margin:5px 0 9px;line-height:1.35}
+.throw-label{display:flex;justify-content:space-between;align-items:center;font-weight:950;font-size:10px;letter-spacing:.7px;margin:9px 1px 5px;color:#ffe5b2}
+.throw-choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.throw-choice button{padding:8px 4px;background:#183849;border:1px solid #567482;border-radius:10px;color:#e1eff3;font-weight:950;font-size:10px;min-height:43px;touch-action:manipulation}
+.throw-choice button small{display:block;color:#b9cdd4;font-weight:700;font-size:9px;margin-top:3px}
+.throw-choice button.active{background:#5b4c31;border-color:#f8d98d;box-shadow:inset 0 0 0 1px #f6d69077;color:#fff3cf}
+.throw-choice button:focus-visible,.throw-modal .primary:focus-visible{outline:3px solid #a1dbff;outline-offset:2px}
+.throw-gauge{border:1px solid #73909e;background:#061a27;border-radius:13px;padding:10px 12px;margin:8px 0 9px}
+.throw-track{position:relative;height:25px;background:linear-gradient(90deg,#844433 0%,#b17f40 25%,#4c8f68 55%,#e6cc79 75%,#bf543c 100%);border-radius:99px;overflow:hidden;border:2px solid #aeb9a7}
+.throw-sweet{position:absolute;top:0;bottom:0;left:44%;width:12%;border-inline:2px solid #fff7be66;background:#fbefae43}
+.throw-needle{position:absolute;width:5px;height:32px;top:-4px;background:#fff;border:1px solid #fff2c7;box-shadow:0 0 8px #fff9c5;left:0;transform:translateX(-50%);transition:left .012s linear}
+.throw-tick{font-size:10px;font-weight:800;color:#d8e8e8;display:flex;justify-content:space-between;margin-top:6px}
+.throw-result{font-size:12px;font-weight:900;color:#ffde91;min-height:20px;margin:3px 0 6px}
+.throw-modal .primary{font-size:17px;padding:13px}
+.throw-modal .secondary{width:100%;margin-top:8px}
+.throw-tip{font-size:10px;color:#adc7d0;margin:7px auto 2px;max-width:330px;line-height:1.4}
+@media(max-height:720px){.throw-modal h2{font-size:23px}.throw-label{margin:7px 0 3px}.throw-choice button{padding:5px 3px;min-height:38px}.throw-gauge{padding:7px 10px;margin:6px 0}.throw-modal .primary{padding:11px}}
+</style></head>
+<body><main class="shell">
+<header class="top"><div class="brand">BA' BATTLE <small>KIRKWALL · V10 RIVAL TACTICS</small></div><div style="display:flex;gap:6px"><button class="utility" id="zoom" title="Change map zoom" aria-label="Zoom map">ZOOM +</button><button class="utility" id="sound">SOUND ON</button><button class="utility" id="restart">MENU</button></div></header>
+<section class="score"><div class="topscore"><span class="up">UPPIES <strong id="upForce">•••</strong></span><span id="scoreName">THE BA'</span><span class="down">DOONIES <strong id="downForce">•••</strong></span></div><div class="fightbar"><div class="marker" id="ballMarker"></div></div><div class="scorebottom"><span>MACKINSON'S CORNER</span><span id="distanceText">MERCAT CROSS · 0m</span><span>THE HARBOUR</span></div></section>
+<section class="mapbox" id="mapbox"><canvas id="game" aria-label="Kirkwall street scrum"></canvas><div class="hud"><div class="pill"><span id="location">MERCAT CROSS</span><small id="mapStatus">Finding Kirkwall street network…</small></div><div class="pill" style="text-align:right">TIME<div class="clock"><span id="clock">90</span>s</div></div></div><div class="toast" id="toast" aria-live="polite"></div><div class="battle-alert" id="battleAlert" aria-live="polite"></div><div class="hints"><span class="source">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br><span id="geoStatus">Connecting to mapped streets…</span></span><span class="minilabel" id="hint">Tap to push · hold to resist</span></div><div class="overlay" id="overlay"><div class="modal" id="modal"><div class="eyebrow">Kirkwall · Orkney</div><h1>THE BA'<br><span style="color:var(--gold)">BATTLE</span></h1><p>Two sides push for the Ba’ along Kirkwall’s streets. Choose a turn at a mapped junction, hold against surges, or send a separate squad to outflank the scrum.</p><div class="teamrow"><button class="team selected" id="teamUp">UPPIES<small>Fight towards Mackinson's Corner</small></button><button class="team" id="teamDown">DOONIES<small>Fight towards Kirkwall Harbour</small></button></div><div class="difficultyrow" role="group" aria-label="Difficulty"><button class="difficulty" id="level-training">PRACTICE<small>Learn the ropes</small></button><button class="difficulty active" id="level-standard">STANDARD<small>A fair contest</small></button><button class="difficulty" id="level-hard">HARD<small>V6 challenge</small></button><button class="difficulty" id="level-veteran">VETERAN<small>Relentless AI</small></button></div><button class="primary" id="start">THROW UP THE BA'</button><div class="rulechips"><span>SKILL THROW-UP</span><span>OPPOSING SCRUMS</span><span>REAL STREET ROUTES</span><span>BA’ FOLLOWS CONNECTED LANES</span></div><p class="footnote">Standard mode is selected by default. The two-stage throw-up starts each arcade match. At the whistle the 90-second round is decided by territory; the real Ba’ has no time limit.</p></div></div></section>
+<section class="bottom"><div class="pressure"><span id="pressureLabel">SCRUM PRESSURE</span><span id="pressureValue">Ready</span></div><div class="meter"><div id="pushMeter"></div></div><div class="meter blue"><div id="staminaMeter" style="width:100%"></div></div><div class="counterbar" id="counterBar"><span id="counterText">OPPOSITION BREAKAWAY!</span><button id="counterBlock" disabled>BLOCK RUN</button></div><div class="controls"><button class="ability" id="rally" disabled>RALLY<small id="rallySub">Charge to unlock</small></button><button class="ability" id="smuggle" disabled>SMUGGLE BA'<small id="smuggleSub">Send a flank first</small></button><button class="ability" id="wind" disabled>SECOND WIND<small id="windSub">Refill stamina</small></button></div><div class="route-header"><span>DIRECT THE SCRUM · CONNECTED LANES</span><span id="nextTurn">Scanning the next junction…</span></div><div class="ai-intel" id="aiIntel" role="status" aria-live="polite">Rival scouts are watching the streets.</div><div class="steerrow" role="group" aria-label="Choose a direction for the scrum"><button class="steer" id="steerLeft" disabled>↶ LEFT <small id="steerLeftName">Finding lanes…</small></button><button class="steer active" id="steerStraight" disabled>↑ STRAIGHT <small>Stay on this street</small></button><button class="steer" id="steerRight" disabled>RIGHT ↷ <small id="steerRightName">Finding lanes…</small></button></div><div class="squadrow"><button class="mini" id="select" disabled>SELECT SQUAD</button><button class="mini" id="flankLeft" disabled>◀ LEFT LANE</button><button class="mini" id="flankRight" disabled>RIGHT LANE ▶</button></div><button class="action" id="push" disabled>PUSH THE BA'!</button><p class="statehint" id="instructions">Tap to push. Choose a connected street at a fork; send a flank then smuggle the Ba’ down that lane.</p></section>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id), canvas=$('game'),ctx=canvas.getContext('2d'), clamp=(x,a,b)=>Math.max(a,Math.min(b,x)), lerp=(a,b,t)=>a+(b-a)*t, hypot=Math.hypot;
+const HOME={lat:58.98159,lon:-2.96045}, N_GOAL={lat:58.98519,lon:-2.96005}, S_GOAL={lat:58.97768,lon:-2.96395};
+const W=256*Math.pow(2,17), Z=17, rootLat=HOME.lat*Math.PI/180, PER_LAT=111320, PER_LON=111320*Math.cos(rootLat); let WORLD_SCALE=1.58;
+const xy=(lat,lon)=>({x:(lon-HOME.lon)*PER_LON,y:(HOME.lat-lat)*PER_LAT}), ll=(x,y)=>({lat:HOME.lat-y/PER_LAT,lon:HOME.lon+x/PER_LON});
+const tiles=new Map(), maxTiles=36;
+const bbox='58.9765,-2.9730,58.9870,-2.9480';
+let gameState='menu', side='up', gameTime=90, elapsed=0, score=0, energy=100, rallyCharge=0, momentum=0, tapPower=0, opponentWave=0, soundOn=true, mapTiles=true, width=390,height=420,cam={x:0,y:0},lastFrame=0,toastTimer=null;
+let ballM=0, originM=0, totalUp=600,totalDown=600, spine=[],spineCum=[],spineEdgeSet=new Set(),graph=null,hasRealGraph=false,locationName='MERCAT CROSS',currentStreet='BROAD STREET',liveForceOwn=2.7,liveForceEnemy=2.7;
+let units=[],chosen=new Set(),selecting=false,lasso=null,flankOptions={left:null,right:null},flanked=[],activeCarrier=null,rallyUntil=0,smuggleUsed=false,windUsed=false,selectedTeam='up',roundSeed=0,winStreak=0;
+let holding=false,combo=0,peakCombo=0,lastTapAt=0,totalTaps=0,enemySurgeAt=14,enemyWarned=false,enemySurgeUntil=0,enemySurgeCount=0,bracedSurgeTime=0,surgeRewarded=false,intercepted=0,smugglePressure=0,zoomIndex=1;
+const LEVELS={training:{label:'PRACTICE',enemyBase:3.25,surge:2.0,surgeEvery:19,enemyAdvance:.36,tapScale:.67,decay:.82,regen:8.2,tapCost:1.7,backlash:26,round:90},standard:{label:'STANDARD',enemyBase:3.9,surge:2.8,surgeEvery:15.5,enemyAdvance:.85,tapScale:.78,decay:.96,regen:7.9,tapCost:1.7,backlash:38,round:90},hard:{label:'HARD',enemyBase:4.25,surge:3.4,surgeEvery:13,enemyAdvance:1.3,tapScale:.72,decay:1.04,regen:7.0,tapCost:1.8,backlash:55,round:90},veteran:{label:'VETERAN',enemyBase:4.6,surge:4.3,surgeEvery:10.5,enemyAdvance:2.0,tapScale:.70,decay:1.2,regen:6.5,tapCost:1.85,backlash:75,round:90}};
+let difficulty='standard',cfg=LEVELS.standard,enemyRunAt=19,enemyRunDeadline=0,enemyRunActive=false,enemyRunCount=0,blocks=0,runFailures=0,redZone=0;
+let steerChoices={left:null,right:null},queuedTurn=null,turnCooldownUntil=0,turnsTaken=0,turnsRejected=0,nextTurnRefresh=0,turningUntil=0,queuedRealGraph=null;
+// V10 tactical opponent: commits real defenders to signalled junctions and chases flank squads.
+// These are finite-state decisions tied to graph routes, never arbitrary teleports.
+let aiBlock=null,aiReactionAt=0,aiFeints=0,aiBlocksBroken=0,aiBlocksHeld=0,aiPursuits=0,aiChaseEscapes=0;
+const AI_REACTION={training:4.3,standard:2.5,hard:1.5,veteran:.8};
+let throwState={aim:'own',style:'loft',phase:'power',seconds:0,power:.05,needle:0.02,accuracy:0,lockedPower:0};
+let throwFlight=null,throwOutcome=null,throwLaunches=0;
+
+
+function selectDifficulty(next){if(!LEVELS[next])return;difficulty=next;cfg=LEVELS[next];for(const k of Object.keys(LEVELS))$('level-'+k)?.classList.toggle('active',k===difficulty);updateHUD()}
+function blockRun(){
+ if(gameState!=='playing')return;
+ if(enemyRunActive){
+  if(energy<16)return;
+  enemyRunActive=false;blocks++;energy-=16;tapPower=Math.max(0,tapPower-1.2);rallyCharge=Math.min(100,rallyCharge+12);
+  enemyRunAt=elapsed+(difficulty==='veteran'?14:difficulty==='standard'?20:17);
+  notify('FLANK BLOCKED! SCRUM HELD');beep(660,.14);updateHUD();return;
+ }
+ if(!aiBlock||!queuedTurn||aiBlock.until<=elapsed||aiBlock.which!==queuedTurn.which)return;
+ const ahead=aiBlock.dist-ownerSign()*ballM;
+ if(ahead>56||ahead < -3||energy<14||tapPower<2.2)return;
+ energy-=14;tapPower=Math.max(0,tapPower-1.2);aiBlocksBroken++;score+=85;
+ aiBlock=null;aiReactionAt=0;
+ notify('JUNCTION CLEARED! +85');beep(740,.16);updateHUD();
+}
+
+const fallbackStreets=[
+['Broad Street','cross','b1','b2','castle'],['Victoria Street','cross','u1','u2','u3','u4','vroad'],['Main Street','vroad','m1','m2','uppiegoal'],
+['Albert Street','castle','a1','a2','a3','a4'],['Bridge Street','a4','bridge1','bridge2'],['Harbour Street','bridge2','harbour1','harbour2','dooniegoal'],
+['Castle Street','castle','castlewest','junctionmid'],['Junction Road','junctionmid','junctionlower','junctionsouth','unionwest'],
+['Tankerness Lane','u1','tankwest','junctionlower'],['Mounthoolie Lane','junctionmid','mounth1','a3'],
+['Laing Street','a2','laing1','kingnorth'],['King Street','laing1','kingnorth','scrynd'],['The Strynd','castle','scrynd','kingnorth'],
+['Palace Road','cross','palace1','watergate'],['Watergate','palace1','watergate','victoriajunction'],['Victoria Road','vroad','victoriajunction'],
+['Union Street','junctionsouth','unionwest','vroad'],['St Olaf’s Wynd','bridge1','stolaf','kingnorth'] ];
+const pxy={cross:[520,792],b1:[542,742],b2:[570,690],castle:[603,647],u1:[510,847],u2:[493,932],u3:[475,1020],u4:[461,1127],vroad:[446,1222],m1:[400,1290],m2:[340,1380],uppiegoal:[206,1515],a1:[636,590],a2:[672,532],a3:[717,458],a4:[754,414],bridge1:[785,360],bridge2:[763,207],harbour1:[702,160],harbour2:[619,167],dooniegoal:[585,130],castlewest:[430,573],junctionmid:[538,338],junctionlower:[293,822],junctionsouth:[247,1206],unionwest:[285,1320],tankwest:[335,839],mounth1:[659,399],laing1:[827,547],kingnorth:[870,470],scrynd:[730,710],palace1:[635,871],watergate:[642,1104],victoriajunction:[454,1225],stolaf:[822,310]};
+// Fallback coordinates are manually traced from Orkney/Kirkwall published street maps, not OSM centreline exports.
+function fallbackGraph(){let nodes=[],map={},g={nodes,edges:[],adj:[],names:new Map(),fallback:true};for(const [id,[px,py]] of Object.entries(pxy)){const lat=HOME.lat-(py-792)*.00000617,lon=HOME.lon+(px-520)*.0000092;map[id]=nodes.length;nodes.push({...xy(lat,lon),lat,lon,id});g.adj.push([])}let count=0;for(const [name,...st] of fallbackStreets)for(let i=1;i<st.length;i++){let a=map[st[i-1]],b=map[st[i]];if(a===undefined||b===undefined||a===b)continue;let len=hypot(nodes[a].x-nodes[b].x,nodes[a].y-nodes[b].y);const eid=count++;g.edges.push({a,b,len,name,kind:'pedestrian'});g.adj[a].push({to:b,eid,len,name,kind:'pedestrian'});g.adj[b].push({to:a,eid,len,name,kind:'pedestrian'})}return g}
+function osmGraph(json){if(!json||!Array.isArray(json.elements))throw Error('Missing OSM ways');const g={nodes:[],edges:[],adj:[],fallback:false},known=new Map();let count=0;const make=(lat,lon)=>{const k=lat.toFixed(7)+','+lon.toFixed(7);if(known.has(k))return known.get(k);const i=g.nodes.length;known.set(k,i);g.nodes.push({...xy(lat,lon),lat,lon,id:k});g.adj.push([]);return i};for(const way of json.elements){if(way.type!=='way'||!Array.isArray(way.geometry)||way.geometry.length<2)continue;const t=way.tags||{},kind=t.highway||'';if(!kind||/^(motorway|trunk|raceway|construction|proposed|motorway_link)$/.test(kind))continue;if(t.access==='private'||t.access==='no'||t.foot==='no'||t.foot==='private'||t.area==='yes')continue;for(let j=1;j<way.geometry.length;j++){let a=make(way.geometry[j-1].lat,way.geometry[j-1].lon),b=make(way.geometry[j].lat,way.geometry[j].lon);if(a===b)continue;const len=hypot(g.nodes[a].x-g.nodes[b].x,g.nodes[a].y-g.nodes[b].y);if(len>160||len<.08)continue;let eid=count++,name=t.name||'';g.edges.push({a,b,len,name,kind});g.adj[a].push({to:b,eid,len,name,kind});g.adj[b].push({to:a,eid,len,name,kind})}}if(g.nodes.length<70)throw Error('Street data incomplete');return g}
+function closest(g,p,pred){let best=-1,dist=Infinity;for(let i=0;i<g.nodes.length;i++){if(pred&&!pred(i))continue;let d=hypot(g.nodes[i].x-p.x,g.nodes[i].y-p.y);if(d<dist){dist=d;best=i}}return best}
+function nearestNamed(g,pattern,target){const ids=new Set();for(const e of g.edges)if(pattern.test(e.name)){ids.add(e.a);ids.add(e.b)}return closest(g,target,ids.size?i=>ids.has(i):null)}
+class Heap{constructor(){this.h=[]}push(x){let a=this.h,i=a.length;a.push(x);while(i>0){let k=(i-1)>>1;if(a[k][0]<=x[0])break;a[i]=a[k];i=k}a[i]=x}pop(){let a=this.h;if(!a.length)return null;let ans=a[0],last=a.pop();if(a.length){let i=0;while(i*2+1<a.length){let c=i*2+1;if(c+1<a.length&&a[c+1][0]<a[c][0])c++;if(last[0]<=a[c][0])break;a[i]=a[c];i=c}a[i]=last}return ans}get length(){return this.h.length}}
+function findPath(g,start,goal,{penalise=null,block=null,maxVisited=25000}={}){if(start<0||goal<0)return [];const D=new Float64Array(g.nodes.length);D.fill(Infinity);const prev=new Int32Array(g.nodes.length);prev.fill(-1);const q=new Heap();D[start]=0;q.push([0,start]);let visits=0;while(q.length&&visits++<maxVisited){const [v,u]=q.pop();if(v>D[u]+.001)continue;if(u===goal)break;for(const e of g.adj[u]){if(block&&block.has(e.eid))continue;let extra=penalise&&penalise.has(e.eid)?8:1;let kind=e.kind,road=kind==='primary'?1.5:kind==='secondary'?1.35:kind==='tertiary'?1.22:kind==='steps'?1.8:kind==='pedestrian'?1:kind==='footway'?1.06:1.12;let nd=v+e.len*extra*road;if(nd<D[e.to]){D[e.to]=nd;prev[e.to]=u;q.push([nd,e.to])}}}if(!Number.isFinite(D[goal]))return [];let arr=[goal],at=goal;while(at!==start){at=prev[at];if(at<0)return [];arr.push(at);if(arr.length>5000)return []}return arr.reverse()}
+function taggedRoute(g,sideName,origin){const end=sideName==='up'?closest(g,xy(S_GOAL.lat,S_GOAL.lon)):closest(g,xy(N_GOAL.lat,N_GOAL.lon));let hints=sideName==='up'?[{name:/Victoria Street/i,near:xy(58.9799,-2.9610)},{name:/Main Street/i,near:xy(58.9782,-2.9628)}]:[{name:/Albert Street/i,near:xy(58.98265,-2.95955)},{name:/Bridge Street/i,near:xy(58.9841,-2.9581)},{name:/Harbour Street/i,near:xy(58.9852,-2.9594)}];let pts=[origin];for(const h of hints){let n=nearestNamed(g,h.name,h.near);if(n!==-1&&n!==pts.at(-1))pts.push(n)}pts.push(end);let combined=[];for(let i=1;i<pts.length;i++){const seg=findPath(g,pts[i-1],pts[i]);if(seg.length<2){return findPath(g,origin,end)}if(combined.length)seg.shift();combined.push(...seg)}return combined}
+function pathLength(ids,g){let s=0;for(let i=1;i<ids.length;i++)s+=hypot(g.nodes[ids[i]].x-g.nodes[ids[i-1]].x,g.nodes[ids[i]].y-g.nodes[ids[i-1]].y);return s}
+function prepare(g){let oldUp=totalUp,oldDown=totalDown,oldBall=ballM;let origin=closest(g,xy(HOME.lat,HOME.lon));let up=taggedRoute(g,'up',origin),down=taggedRoute(g,'down',origin);if(up.length<3||down.length<3||pathLength(up,g)<160||pathLength(down,g)<160)throw Error('No continuous streets between goal landmarks');const ids=up.slice().reverse().concat(down.slice(1));graph=g;spine=ids.map(i=>({...g.nodes[i],id:i}));spineCum=[0];spineEdgeSet=new Set();for(let j=1;j<spine.length;j++){spineCum[j]=spineCum.at(-1)+hypot(spine[j].x-spine[j-1].x,spine[j].y-spine[j-1].y);let a=ids[j-1],b=ids[j];for(const e of g.adj[a])if(e.to===b){spineEdgeSet.add(e.eid);break}}originM=spineCum[up.length-1];totalUp=originM;totalDown=spineCum.at(-1)-originM;if(gameState==='playing'&&!g.fallback){ballM=clamp(oldBall<0?oldBall/Math.max(1,oldUp)*totalUp:oldBall/Math.max(1,oldDown)*totalDown,-totalUp,totalDown);flanked=[];chosen.clear();activeCarrier=null;}hasRealGraph=!g.fallback;flankOptions={left:null,right:null};queuedTurn=null;steerChoices={left:null,right:null};nextTurnRefresh=0;turnCooldownUntil=0;$('geoStatus').textContent=hasRealGraph?'Live mapped OSM street network':'Illustrated fallback streets (approximate)';$('mapStatus').textContent=hasRealGraph?'STREET NETWORK ACTIVE':'OFFLINE ROUTES · APPROXIMATE';$('mapStatus').style.color=hasRealGraph?'#9ff3b9':'#f3d195';updateHUD()}
+function pointAt(s){if(!spine.length)return xy(HOME.lat,HOME.lon);let d=clamp(s+originM,0,spineCum.at(-1));let lo=0,hi=spineCum.length-1;while(lo+1<hi){let m=(lo+hi)>>1;if(spineCum[m]<d)lo=m;else hi=m}let i=clamp(hi,1,spine.length-1),a=spine[i-1],b=spine[i],t=(d-spineCum[i-1])/Math.max(.1,spineCum[i]-spineCum[i-1]);return{x:lerp(a.x,b.x,t),y:lerp(a.y,b.y,t),lat:lerp(a.lat,b.lat,t),lon:lerp(a.lon,b.lon,t)}}
+function tangentAt(s){let a=pointAt(s-4),b=pointAt(s+4);let dx=b.x-a.x,dy=b.y-a.y,len=hypot(dx,dy)||1;return{fx:dx/len,fy:dy/len,nx:-dy/len,ny:dx/len}}
+function getStreet(){let pos=pointAt(ballM),best='',d=Infinity;for(let i=0;i<spine.length-1;i++){const a=spine[i],b=spine[i+1],delta=hypot(a.x-pos.x,a.y-pos.y)+hypot(b.x-pos.x,b.y-pos.y);if(delta<d){d=delta;const links=graph.adj[a.id]||[],e=links.find(e=>e.to===b.id);best=e?.name||best}}return best||'KIRKWALL LANES'}
+function flankRoutes(){
+ if(!graph||gameState!=='playing')return;
+ // Both the main scrum and the smuggling squads now use the SAME verified street forks.
+ // Previous versions used fixed paths starting at Mercat Cross even after the ball had moved.
+ const turns=makeTurnChoices(true);
+ const result={left:null,right:null};
+ for(const which of ['left','right']){
+  const turn=turns[which];
+  if(!turn)continue;
+  const anchored=laneWaypoints(turn,ballM);
+  if(anchored)result[which]={...turn,which,length:anchored.length};
+ }
+ flankOptions=result;
+}
+// Build a continuous ball/squad journey: precise current point -> next nodes on the
+// current street -> selected junction -> side lane -> connected rejoin node.
+function laneWaypoints(choice,fromM=ballM){
+ const lane=choice?.path||choice?.route;
+ if(!graph||!Array.isArray(lane)||lane.length<3)return null;
+ const sign=ownerSign(),ordered=sign===1?spine.map(p=>p.id):spine.map(p=>p.id).reverse();
+ const metres=sign===1?spineCum.map(x=>x-originM):spineCum.slice().reverse().map(x=>originM-x);
+ const here=sign*fromM;
+ // Flanks may be waiting at a junction the contest has just passed. The ball
+ // must physically travel BACK along that street first; it may not jump to the squad.
+ const i=ordered.findIndex((id,k)=>id===lane[0]&&Math.abs(metres[k]-here)<=210);
+ if(i<0||Math.abs(metres[i]-here)>210)return null;
+ const j=ordered.findIndex((id,k)=>k>i&&id===lane.at(-1));
+ if(j<0||metres[j]<=here+12)return null;
+ const points=[pointAt(fromM)];
+ if(metres[i]>=here){
+  for(let k=0;k<=i;k++)if(metres[k]>here+.03)points.push(graph.nodes[ordered[k]]);
+ }else{
+  for(let k=ordered.length-1;k>=i;k--)if(metres[k]<here-.03&&metres[k]>=metres[i]-.03)points.push(graph.nodes[ordered[k]]);
+ }
+ for(const id of lane.slice(1)){
+  if(!graph.nodes[id])return null;
+  points.push(graph.nodes[id]);
+ }
+ const clean=points.filter((p,k)=>k===0||hypot(p.x-points[k-1].x,p.y-points[k-1].y)>.05);
+ const length=polyLength(clean);
+ if(length<15||length>1600)return null;
+ // Every hop after the origin point must use a genuine graph edge.
+ const ids=lane;
+ for(let k=1;k<ids.length;k++)if(!graph.adj[ids[k-1]].some(e=>e.to===ids[k]))return null;
+ return {points:clean,length,joinM:sign*metres[j],startM:fromM,departureM:sign*metres[i],laneName:choice.name||choice.laneName||'Side lane',which:choice.which};
+}
+function polyLength(points){let d=0;for(let i=1;i<points.length;i++)d+=hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y);return d;}
+function pathPosition(points,t){if(!points?.length)return pointAt(ballM);if(points.length===1)return points[0];
+ const total=polyLength(points);let d=clamp(t,0,1)*total;
+ for(let i=1;i<points.length;i++){
+  const a=points[i-1],b=points[i],len=hypot(b.x-a.x,b.y-a.y);
+  if(d<=len||i===points.length-1){const r=len?clamp(d/len,0,1):0;return{x:lerp(a.x,b.x,r),y:lerp(a.y,b.y,r)};}
+  d-=len;
+ }
+ return points.at(-1);
+}
+// V7: graph-respecting turn commands. A queued turn is only enacted at a connected junction;
+// no shortcut may cross a building or teleport the ball. Directions are from the player's
+// viewpoint facing their own goal (Uppies south, Doonies north).
+function turnLabel(choice){if(!choice)return 'No connected lane';return choice.name||'Side street'}
+function rebuildAfterTurn(newIds,sign,oldBall,oldOrigin){
+ const cross=closest(graph,xy(HOME.lat,HOME.lon)),originIndex=newIds.indexOf(cross);
+ if(originIndex<0)throw Error('Mercat Cross removed from the route');
+ let arr=newIds.map(i=>({...graph.nodes[i],id:i})),cum=[0],edgeSet=new Set();
+ for(let i=1;i<arr.length;i++){
+   const a=arr[i-1],b=arr[i],edge=graph.adj[a.id].find(e=>e.to===b.id);
+   if(!edge)throw Error('Disconnected proposed lane');
+   cum[i]=cum[i-1]+edge.len;edgeSet.add(edge.eid);
+ }
+ const newOrigin=cum[originIndex],newBall=oldBall; // Current scrum is before the selected fork, so local distance from Mercat Cross stays unchanged.
+ if(!(newOrigin>100&&cum.at(-1)-newOrigin>100))throw Error('Goal route broken');
+ spine=arr;spineCum=cum;spineEdgeSet=edgeSet;originM=newOrigin;
+ totalUp=newOrigin;totalDown=cum.at(-1)-newOrigin;ballM=clamp(newBall,-totalUp,totalDown);
+}
+function makeTurnChoices(ignoreCooldown=false){
+ if(!graph||gameState!=='playing'||(!ignoreCooldown&&elapsed<turnCooldownUntil))return {left:null,right:null};
+ const sign=ownerSign(),ids=spine.map(p=>p.id),ordered=sign===1?ids:ids.slice().reverse();
+ const d=sign===1?spineCum.map(x=>x-originM):spineCum.slice().reverse().map(x=>originM-x);
+ const here=sign*ballM,result={left:null,right:null},rated={left:Infinity,right:Infinity};
+ const maxAhead=205,forbidden=new Set(spineEdgeSet);
+ let considered=0,searchBudget=110;
+ for(let i=0;i<ordered.length-2;i++){
+   const ahead=d[i]-here;
+   if(ahead < -5 || ahead>maxAhead)continue;
+   let u=ordered[i],prev=ordered[Math.max(0,i-1)],next=ordered[i+1];
+   let off=graph.adj[u].filter(e=>e.to!==prev&&e.to!==next&&!forbidden.has(e.eid));
+   if(!off.length)continue;
+   considered++;if(considered>12)break;
+   let p=graph.nodes[u],forward=graph.nodes[next],len=hypot(forward.x-p.x,forward.y-p.y)||1,fx=(forward.x-p.x)/len,fy=(forward.y-p.y)/len;
+   for(const first of off.slice(0,7)){
+     const q=graph.nodes[first.to],dx=q.x-p.x,dy=q.y-p.y,cross=fx*dy-fy*dx;
+     if(Math.abs(cross)<.08*hypot(dx,dy))continue;
+     const which=cross<0?'left':'right';
+     // Seek a rejoin ahead; block main-route edges so the detour cannot fold back along
+     // the original street, even if an OSM footway exists alongside it.
+     for(let j=i+2;j<ordered.length;j++){
+       const forwardMeters=d[j]-d[i];
+       if(forwardMeters<28)continue;
+       if(forwardMeters>400)break;
+       if(--searchBudget<0)break;
+       const tail=findPath(graph,first.to,ordered[j],{block:forbidden,maxVisited:4500});
+       if(tail.length<2||tail.includes(u))continue;
+       const path=[u,...tail];if(new Set(path).size!==path.length)continue;
+       const routeLen=pathLength(path,graph);
+       if(routeLen<35||routeLen>Math.max(650,forwardMeters*4.4))continue;
+       // A genuine connected detour, not a trivial alley leading immediately back.
+       if(routeLen<forwardMeters*.9)continue;
+       const cost=ahead*.70+Math.max(0,routeLen-forwardMeters)*.10+Math.abs(150-forwardMeters)*.035;
+       if(cost<rated[which]){
+         rated[which]=cost;
+         result[which]={which,startIndex:i,endIndex:j,path,dist:d[i],ahead,name:first.name||graph.adj[first.to].find(e=>e.name)?.name||'Unnamed lane',length:routeLen};
+       }
+     }
+   }
+   if(result.left&&result.right&&ahead>115)break;
+ }
+ return result;
+}
+function signalRivalTurn(choice){
+ if(!choice||difficulty==='training'&&Math.random()<.6)return;
+ aiReactionAt=elapsed+AI_REACTION[difficulty]+(choice.ahead>90?.5:0);
+}
+function rivalAI(dt){
+ if(queuedTurn&&!aiBlock&&aiReactionAt&&elapsed>=aiReactionAt){
+  const c=queuedTurn;
+  aiBlock={which:c.which,dist:c.dist,node:c.path[0],path:c.path.slice(),createdAt:elapsed,until:elapsed+(difficulty==='veteran'?10:8)};
+  aiReactionAt=0;
+  notify('RIVALS DEFEND '+turnLabel(c).toUpperCase()+'!');beep(235,.13);
+ }
+ if(aiBlock){
+  const ahead=aiBlock.dist-ownerSign()*ballM;
+  if(elapsed>=aiBlock.until||ahead< -8){aiBlock=null;return}
+  if(queuedTurn&&aiBlock.which===queuedTurn.which&&ahead<=12&&ahead>=-2){
+   // Defenders need time to stop a scrum. The pressure is capped; Standard remains winnable.
+   if(elapsed-aiBlock.createdAt>=3.4&&tapPower<3.5&&momentum*ownerSign()<1.5){
+    ballM=clamp(ballM-ownerSign()*3,-totalUp,totalDown);
+    aiBlocksHeld++;aiBlock.createdAt=elapsed+.8;
+    notify('RIVALS DRIVE YOU BACK AT THE JUNCTION');
+   }
+  }
+ }
+ for(const f of flanked){
+  if(!f.pursuit&&elapsed>=f.pursuitAt){
+   f.pursuit={progress:Math.max(0,f.travel-.14),strength:difficulty==='training'?2:difficulty==='standard'?3:difficulty==='hard'?4:5};
+   aiPursuits++;
+   notify('OPPOSITION CHASES '+f.laneName.toUpperCase());beep(300,.1);
+  }
+  if(f.pursuit){
+   const speed=f.smuggling?.165:.155;
+   f.pursuit.progress=clamp(f.pursuit.progress+dt*speed,0,1);
+  }
+ }
+} 
+function activeBlockade(){
+ return aiBlock&&queuedTurn&&aiBlock.which===queuedTurn.which&&aiBlock.until>elapsed;
+}
+function defendedJunction(){
+ if(!activeBlockade())return false;
+ const ahead=aiBlock.dist-ownerSign()*ballM;
+ return ahead>=-3&&ahead<=48;
+}
+function aiStatus(){
+ if(activeCarrier){const f=flanked.find(f=>f.smuggling);return f?.pursuit?'RIVALS PURSUING THE BA’ · RALLY CAN DISTRACT THEM':'BA’ ON THE FLANK · STAY AHEAD OF THE CHASE';}
+ if(activeBlockade())return 'JUNCTION DEFENDED: '+Math.max(0,Math.round(aiBlock.dist-ownerSign()*ballM))+'m · BREAK DEFENCE or choose STRAIGHT to feint';
+ const pursued=flanked.find(f=>f.pursuit&&!f.smuggling);
+ if(pursued)return 'RIVALS TRACKING '+pursued.laneName.toUpperCase()+' · try a second lane or rally';
+ if(aiBlock&&!queuedTurn)return 'FEINT SUCCESS · RIVALS STILL COMMITTED TO SIDE LANE';
+ if(queuedTurn)return 'ORDER OBSERVED · RIVALS MAY GUARD THE JUNCTION';
+ return 'RIVAL SCOUTS WATCH YOUR STREET CHOICES';
+}
+function planTurn(which){
+ if(gameState!=='playing')return;
+ if(activeCarrier){notify('BA’ ALREADY MOVING THROUGH A LANE');return;}
+ if(which==='straight'){
+  if(aiBlock&&queuedTurn&&aiBlock.which===queuedTurn.which){
+    aiFeints++;score+=65;aiBlock.until=Math.min(aiBlock.until,elapsed+4.5);
+    notify('FEINT! DEFENDERS COMMITTED TO THE WRONG STREET +65');beep(700,.13);
+  }else{notify('HOLD THE MAIN STREET');}
+  queuedTurn=null;aiReactionAt=0;updateHUD();return;
+ }
+ if(elapsed<turnCooldownUntil){notify('HOLD THE NEXT JUNCTION');return}
+ const choice=steerChoices[which];if(!choice){notify('NO CONNECTED '+which.toUpperCase()+' LANE AHEAD');return}
+ queuedTurn={...choice,issuedAt:elapsed};
+ // An opponent previously baited into another street cannot react instantly to a new order.
+ if(!aiBlock)signalRivalTurn(queuedTurn);
+ notify('ORDER: '+which.toUpperCase()+' AT '+turnLabel(choice).toUpperCase());beep(475,.10);
+ updateHUD();
+}
+function checkPendingTurn(){
+ if(!queuedTurn||gameState!=='playing'||activeCarrier)return;
+ const sign=ownerSign(),ahead=queuedTurn.dist-sign*ballM;
+ if(ahead>6)return;
+ if(ahead<-.5){queuedTurn=null;turnsRejected++;notify('JUNCTION PASSED — ORDER EXPIRED');return}
+ // You must have forward pressure: steering cannot save a losing scrum by teleporting it.
+ if(momentum*sign<.2||energy<12)return;
+ if(defendedJunction()&&tapPower<7.4){
+  // A committed defence blocks the fork until a counter-command or powerful burst.
+  if(elapsed-aiBlock.createdAt>=1.2)notify('JUNCTION BLOCKED · BUILD PRESSURE OR BREAK DEFENCE');
+  return;
+ }
+ const choice=queuedTurn,oldOrigin=originM,oldBall=ballM;
+ try{
+   const ids=spine.map(p=>p.id),ordered=sign===1?ids:ids.slice().reverse();
+   if(ordered[choice.startIndex]!==choice.path[0]||ordered[choice.endIndex]!==choice.path.at(-1))throw Error('Street junction changed');
+   const repl=ordered.slice(0,choice.startIndex).concat(choice.path,ordered.slice(choice.endIndex+1));
+   rebuildAfterTurn(sign===1?repl:repl.reverse(),sign,oldBall,oldOrigin);
+   energy=Math.max(0,energy-12);tapPower*=.77;turningUntil=elapsed+3;
+   turnsTaken++;turnCooldownUntil=elapsed+6;queuedTurn=null;aiReactionAt=0;aiBlock=null;steerChoices={left:null,right:null};nextTurnRefresh=elapsed+1;
+   flankOptions={left:null,right:null};flankRoutes();
+   notify('SCRUM TURNS '+choice.which.toUpperCase()+' — '+turnLabel(choice).toUpperCase());beep(720,.17);
+ }catch(e){console.warn('Turn order cancelled',e);queuedTurn=null;turnsRejected++;notify('LANE CONNECTION LOST — KEEP PUSHING')}
+}
+function drawTurnGuide(){
+ if(gameState!=='playing')return;
+ if(aiBlock&&graph?.nodes?.[aiBlock.node]&&aiBlock.until>elapsed){
+  const q=worldToScreen(graph.nodes[aiBlock.node]);
+  if(q.x>8&&q.x<width-8&&q.y>60&&q.y<height-10){
+   ctx.save();ctx.strokeStyle='#f9866d';ctx.lineWidth=3;ctx.setLineDash([5,4]);
+   ctx.beginPath();ctx.arc(q.x,q.y,19,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+   ctx.fillStyle='#ffe4c6';ctx.font='900 11px system-ui';ctx.textAlign='center';ctx.fillText('BLOCK',q.x,q.y-25);ctx.restore();
+  }
+ }
+
+ const candidates=queuedTurn?[queuedTurn]:[steerChoices.left,steerChoices.right].filter(Boolean);
+ for(const choice of candidates){
+   const pts=choice.path.map(id=>graph.nodes[id]);
+   stroke(pts,queuedTurn?12:7,'#081b27c4');
+   stroke(pts,queuedTurn?6:3.5,queuedTurn?'#f5d17b':choice.which==='left'?'#93e4ca':'#b6a8fa',[8,4]);
+   const pt=worldToScreen(graph.nodes[choice.path[0]]);
+   if(pt.x<15||pt.x>width-15||pt.y<85||pt.y>height-30)continue;
+   ctx.save();ctx.beginPath();ctx.arc(pt.x,pt.y,queuedTurn?14:10,0,Math.PI*2);
+   ctx.fillStyle=queuedTurn?'#f6cb73':'#102a37';ctx.strokeStyle='#ffeda7';ctx.lineWidth=2;ctx.fill();ctx.stroke();
+   ctx.textAlign='center';ctx.font='1000 12px system-ui';ctx.fillStyle=queuedTurn?'#1e2222':'#f8f7ec';
+   ctx.fillText(choice.which==='left'?'↶':'↷',pt.x,pt.y+4);ctx.restore();
+ }
+}
+
+function worldToScreen(pt){return {x:(pt.x-cam.x)*WORLD_SCALE+width/2,y:(pt.y-cam.y)*WORLD_SCALE+height/2}}
+function merc(lat,lon){let sin=Math.sin(lat*Math.PI/180);return{x:(lon+180)/360*W,y:(.5-Math.log((1+sin)/(1-sin))/(4*Math.PI))*W}}
+function displayTiles(){const mw=merc(HOME.lat,HOME.lon),wp=ll(cam.x,cam.y),cw=merc(wp.lat,wp.lon),left=cw.x-width/(2*WORLD_SCALE*PER_LON)*Math.cos(rootLat)*W/360 /* unused */;
+// Convert game projected meters to Web Mercator tile pixels using two sampled metres.
+let localScale=(merc(HOME.lat,HOME.lon+1/PER_LON).x-mw.x),pixelPerMeter=localScale;
+const L=cw.x-width/(2*WORLD_SCALE)*pixelPerMeter,R=cw.x+width/(2*WORLD_SCALE)*pixelPerMeter,T=cw.y-height/(2*WORLD_SCALE)*pixelPerMeter,B=cw.y+height/(2*WORLD_SCALE)*pixelPerMeter;
+const x0=Math.floor(L/256)-1,x1=Math.floor(R/256)+1,y0=Math.floor(T/256)-1,y1=Math.floor(B/256)+1;
+let displayed=0;for(let tx=x0;tx<=x1;tx++)for(let ty=y0;ty<=y1;ty++){if(displayed++>20)continue;let key=tx+':'+ty,v=tiles.get(key);if(!v){if(tiles.size>maxTiles){for(const [k,a] of tiles){if(a.loaded){tiles.delete(k);break}}}let img=new Image();img.crossOrigin='anonymous';v={img,loaded:false,fail:false};tiles.set(key,v);img.onload=()=>v.loaded=true;img.onerror=()=>v.fail=true;img.src=`https://tile.openstreetmap.org/${Z}/${tx}/${ty}.png`;}if(v.loaded){const sx=(tx*256-cw.x)/pixelPerMeter*WORLD_SCALE+width/2,sy=(ty*256-cw.y)/pixelPerMeter*WORLD_SCALE+height/2,size=256/pixelPerMeter*WORLD_SCALE;ctx.drawImage(v.img,sx,sy,size+.6,size+.6)}}}
+function stroke(points,widthPx,color,dash=[]){if(points.length<2)return;ctx.beginPath();points.forEach((pt,i)=>{const q=worldToScreen(pt);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)});ctx.strokeStyle=color;ctx.lineWidth=widthPx;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([])}
+function drawBack(){ctx.fillStyle='#16323f';ctx.fillRect(0,0,width,height);ctx.lineWidth=1;for(let i=-10;i<12;i++){ctx.strokeStyle='#45616d33';ctx.beginPath();ctx.moveTo(i*95+(cam.x%95),0);ctx.lineTo(i*95+(cam.x%95),height);ctx.stroke()};if(mapTiles)displayTiles();const hasTile=[...tiles.values()].some(v=>v.loaded);if(!hasTile||!mapTiles||hasRealGraph){for(const e of graph.edges){if(!e?.len)continue;const a=graph.nodes[e.a],b=graph.nodes[e.b];const ap=worldToScreen(a),bp=worldToScreen(b);if((ap.x< -35&&bp.x< -35)||(ap.x>width+35&&bp.x>width+35)||(ap.y< -35&&bp.y< -35)||(ap.y>height+35&&bp.y>height+35))continue;const thin=e.kind==='footway'||e.kind==='path'||e.kind==='steps';stroke([a,b],hasTile?(thin?4:6):(thin?5:15),hasTile?'#08222b88':'#2f5662');stroke([a,b],hasTile?(thin?2.1:3.2):(thin?3:9),hasTile?'#d0e5dfab':'#6a88929a')}const seen=new Set();ctx.save();ctx.font='700 10px system-ui';ctx.textAlign='center';ctx.fillStyle='#b9d0d3';for(const e of graph.edges){if(!e.name||seen.has(e.name)||e.len<13)continue;const a=graph.nodes[e.a],b=graph.nodes[e.b],mid=worldToScreen({x:(a.x+b.x)/2,y:(a.y+b.y)/2});if(mid.x<40||mid.y<65||mid.x>width-40||mid.y>height-25)continue;seen.add(e.name);ctx.fillText(e.name.toUpperCase(),mid.x,mid.y-10)}ctx.restore()}}
+function drawRoutes(){const near=ballM,sign=side==='up'?-1:1;const startM=clamp(near-200,-totalUp,totalDown),endM=clamp(near+200,-totalUp,totalDown);let pts=[];for(let s=startM;s<=endM;s+=6)pts.push(pointAt(s));pts.push(pointAt(endM));stroke(pts,14,'#021822a9');stroke(pts,8,'#d9d28c94',[9,6]);for(const opt of Object.values(flankOptions)){if(!opt)continue;let arr=opt.path.map(i=>graph.nodes[i]);stroke(arr,11,'#021824b5');stroke(arr,5,opt.which==='left'?'#e2b96a':'#8eebda',[7,6])}for(const squad of flanked){if(squad.waypoints){stroke(squad.waypoints,5,'#f7e9b0aa',[5,7])}}
+ if(activeCarrier){stroke(activeCarrier.points,14,'#031d29bd');stroke(activeCarrier.points,7,activeCarrier.phase==='return'?'#f68e80':'#ffe39b',[8,4]);}
+for(const [s,label,color] of [[-totalUp,'UPPIE GOAL','#f2ad69'],[totalDown,'DOONIE GOAL','#74c4e8']]){let p=worldToScreen(pointAt(s));if(p.x< -50||p.y< -50||p.x>width+50||p.y>height+50)continue;ctx.fillStyle='#0b2432';ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,10,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.font='800 10px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(label,p.x,p.y-16)}}
+function ownerSign(){return side==='up'?-1:1}
+function playerWorld(id,ally,now){if(ally){const squad=flanked.find(s=>s.ids.includes(id));if(squad){const pt=pathPosition(squad.waypoints,clamp(squad.travel+(id%4)*.008,0,1));return{x:pt.x+(id%2?1.5:-1.5),y:pt.y}}const sign=ownerSign();const line=Math.floor(id/4),col=id%4;let base=pointAt(clamp(ballM-sign*(9+line*7),-totalUp,totalDown)),t=tangentAt(ballM),n=(col-1.5)*6.3,phase=Math.sin(now*.003+id)*1.0;return{x:base.x+t.nx*n+t.fx*phase,y:base.y+t.ny*n+t.fy*phase}}else{const sign=ownerSign(),line=Math.floor(id/4),col=id%4;let base=pointAt(clamp(ballM+sign*(9+line*7),-totalUp,totalDown)),t=tangentAt(ballM),n=(col-1.5)*6.3,phase=Math.sin(now*.002+id)*1.2;return{x:base.x+t.nx*n+t.fx*phase,y:base.y+t.ny*n+t.fy*phase}}}
+function drawPlayer(pt,ally,id,now){let q=worldToScreen(pt);if(q.x<-20||q.y<-20||q.x>width+20||q.y>height+20)return;const selected=ally&&chosen.has(id),c=ally?(side==='up'?'#f6a05f':'#73bdeb'):(side==='up'?'#73bdeb':'#f6a05f');if(selected){ctx.beginPath();ctx.arc(q.x,q.y,11,0,7);ctx.strokeStyle='#fff1a1';ctx.lineWidth=2.8;ctx.stroke()}ctx.fillStyle=c;ctx.strokeStyle='#112333';ctx.lineWidth=2;ctx.beginPath();ctx.arc(q.x,q.y,7.2,0,7);ctx.fill();ctx.stroke();ctx.beginPath();ctx.arc(q.x-1.6,q.y-2,2,0,7);ctx.fillStyle='#f9ddb8';ctx.fill()}
+function drawPursuers(now){
+ const color=side==='up'?'#74bfe6':'#f4a25e';
+ for(const squad of flanked){
+  if(!squad.pursuit)continue;
+  const strength=squad.pursuit.strength;
+  const centre=pathPosition(squad.waypoints,squad.pursuit.progress);
+  for(let k=0;k<strength;k++){
+   const dir=k%2?1:-1;
+   const q=worldToScreen({x:centre.x+dir*(k+1)*2.4,y:centre.y+(k-1.5)*2.4});
+   if(q.x<5||q.y<65||q.x>width-5||q.y>height-5)continue;
+   ctx.save();ctx.fillStyle=color;ctx.strokeStyle='#ffe0a9';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(q.x,q.y,5.7,0,7);ctx.fill();ctx.stroke();ctx.restore();
+  }
+ }
+}
+function drawScrum(now){
+ const front=worldToScreen(pointAt(ballM)),t=tangentAt(ballM),press=Math.min(1,Math.abs(momentum)/12);
+ if(gameState==='playing'&&!activeCarrier){ctx.save();ctx.translate(front.x,front.y);ctx.rotate(Math.atan2(t.fy,t.fx));ctx.strokeStyle=enemySurgeUntil>elapsed?'#f16f5baa':'#ffcc8177';ctx.lineWidth=2+press*2;ctx.beginPath();ctx.moveTo(-7,-34);ctx.lineTo(7,-34);ctx.moveTo(-7,34);ctx.lineTo(7,34);ctx.stroke();ctx.restore();}
+ const chasing=Math.max(0,...flanked.map(f=>f.pursuit?.strength||0));
+ for(let i=15-chasing;i>=0;i--)drawPlayer(playerWorld(i,false,now),false,i,now);
+ for(let i=15;i>=0;i--)drawPlayer(playerWorld(i,true,now),true,i,now);
+ drawPursuers(now);const pos=activeCarrier?carrierPosition():pointAt(ballM),p=worldToScreen(pos);ctx.save();const ripple=16+10*((now/600)%1);ctx.strokeStyle='#ffedb4aa';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,ripple,0,7);ctx.stroke();ctx.shadowColor='#d68b4a';ctx.shadowBlur=16;ctx.beginPath();ctx.arc(p.x,p.y,7.4,0,7);ctx.fillStyle='#c88144';ctx.fill();ctx.strokeStyle='#fff0cc';ctx.lineWidth=2;ctx.stroke();ctx.restore();ctx.font='1000 10px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff4ba';ctx.fillText('BA’',p.x,p.y-22);if(gameState==='playing'&&holding&&!activeCarrier){ctx.fillStyle='#b9e5ff';ctx.fillText('BRACING',p.x,p.y+36)}if(activeCarrier){ctx.fillStyle='#fff0b3';ctx.fillText('SMUGGLED!',p.x,p.y-36)}}
+function carrierPosition(){return activeCarrier?pathPosition(activeCarrier.points,activeCarrier.t):pointAt(ballM)}
+function drawLasso(){if(!lasso)return;let x=Math.min(lasso.x,lasso.tx),y=Math.min(lasso.y,lasso.ty),w=Math.abs(lasso.tx-lasso.x),h=Math.abs(lasso.ty-lasso.y);ctx.strokeStyle='#ffedab';ctx.lineWidth=2;ctx.setLineDash([6,3]);ctx.strokeRect(x,y,w,h);ctx.setLineDash([]);ctx.fillStyle='#f8da7935';ctx.fillRect(x,y,w,h)}
+function render(now){const target=throwFlight?pointAt(throwFlight.landing/2):activeCarrier?carrierPosition():pointAt(ballM);cam.x=lerp(cam.x,target.x,.11);cam.y=lerp(cam.y,target.y,.11);ctx.save();drawBack();drawRoutes();drawTurnGuide();drawScrum(now);drawThrowFlight();drawLasso();ctx.restore()}
+function drawThrowFlight(){
+ if(!throwFlight)return;
+ const t=clamp(throwFlight.t,0,1),world=pointAt(throwFlight.landing*t),p=worldToScreen(world);
+ const height=(throwFlight.style==='loft'?75:throwFlight.style==='drive'?38:18)*Math.sin(Math.PI*t);
+ ctx.save();ctx.beginPath();ctx.ellipse(p.x+3,p.y+4,8+5*(1-t),4,0,0,Math.PI*2);ctx.fillStyle='#0008';ctx.fill();
+ ctx.beginPath();ctx.arc(p.x,p.y-height,9,0,Math.PI*2);ctx.fillStyle='#b47b4c';ctx.strokeStyle='#ffe5a5';ctx.lineWidth=2;ctx.fill();ctx.stroke();
+ ctx.font='950 11px system-ui';ctx.fillStyle='#fff0b5';ctx.textAlign='center';ctx.fillText('THE BA’ IS IN THE AIR',Math.max(84,Math.min(width-84,p.x)),Math.max(110,p.y-height-26));ctx.restore();
+}
+
+function notify(msg){let t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),850)}
+function beep(f=360,d=.06){if(!soundOn)return;try{let C=window.AudioContext||window.webkitAudioContext,ac=window.__baAudio||(window.__baAudio=new C());if(ac.state==='suspended')ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.value=.055;o.connect(g).connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch{}}
+function updateHUD(){let sign=ownerSign(),p=clamp(ballM, -totalUp,totalDown),ratio=(p+totalUp)/Math.max(1,totalDown+totalUp);$('ballMarker').style.left=(ratio*100)+'%';$('clock').textContent=Math.ceil(gameTime).toString();$('distanceText').textContent=activeCarrier?`BA’ IN LANE · ${Math.round(activeCarrier.t*100)}%`:Math.abs(Math.round(ballM))+'m '+(ballM< -4?'UP':'')+(ballM>4?'DOON':'')+(Math.abs(ballM)<=4?'FROM THE CROSS':'');$('location').textContent=gameState==='menu'?'MERCAT CROSS':activeCarrier?activeCarrier.laneName.toUpperCase():getStreet().toUpperCase();$('upForce').textContent=side==='up'?(Math.round(clamp(100*liveForceOwn/(liveForceOwn+liveForceEnemy),0,100))+'%'):(Math.round(clamp(100*liveForceEnemy/(liveForceOwn+liveForceEnemy),0,100))+'%');$('downForce').textContent=side==='down'?(Math.round(clamp(100*liveForceOwn/(liveForceOwn+liveForceEnemy),0,100))+'%'):(Math.round(clamp(100*liveForceEnemy/(liveForceOwn+liveForceEnemy),0,100))+'%');$('pushMeter').style.width=clamp(rallyCharge,0,100)+'%';$('staminaMeter').style.width=clamp(energy,0,100)+'%';const blockNow=gameState==='playing'&&defendedJunction();
+ $('counterBar').classList.toggle('show',gameState==='playing'&&(enemyRunActive||blockNow));
+ $('counterBlock').textContent=enemyRunActive?'BLOCK RUN':'BREAK DEFENCE';
+ $('counterBlock').disabled=!(gameState==='playing'&&(enemyRunActive?energy>=16:blockNow&&energy>=14&&tapPower>=2.2));
+ $('counterText').textContent=enemyRunActive?`RIVAL BREAKAWAY · ${Math.max(0,enemyRunDeadline-elapsed).toFixed(1)}s`:blockNow?'RIVAL BLOCKADE · KEEP YOUR ROUTE OPEN':'RIVAL BREAKAWAY';
+ const intel=$('aiIntel');intel.textContent=gameState==='playing'?aiStatus():'Rival scouts are watching the streets.';
+ intel.classList.toggle('threat',gameState==='playing'&&(!!activeBlockade()||flanked.some(f=>f.pursuit)));
+ intel.classList.toggle('feint',gameState==='playing'&&!!aiBlock&&!queuedTurn);$('pressureValue').textContent=gameState==='playing'?`${holding&&energy>2?'BRACING · ':''}${combo>=3?'COMBO x'+combo+' · ':''}${flanked.reduce((n,s)=>n+s.ids.length,0)} flanking`:'Ready';
+ const alert=$('battleAlert');const incoming=gameState==='playing'&&enemySurgeAt-elapsed<2.5&&enemySurgeAt>elapsed;const underAttack=gameState==='playing'&&enemySurgeUntil>elapsed;alert.classList.toggle('show',incoming||underAttack);alert.textContent=underAttack?'OPPOSITION SURGE! HOLD TO BRACE':incoming?'OPPOSITION BUILDING UP…':'';
+ $('push').classList.toggle('bracing',holding&&energy>2);$('push').textContent=holding&&energy>2?'HOLD THE LINE!':combo>=3?'PUSH · COMBO x'+combo:"PUSH THE BA'!";$('rally').disabled=!(gameState==='playing'&&rallyCharge>=55&&rallyUntil<=elapsed);$('rallySub').textContent=rallyUntil>elapsed?'Pushing!':rallyCharge>=55?'Rally the scrum':'Charge 55%';$('wind').disabled=!(gameState==='playing'&&!windUsed&&energy<55);$('windSub').textContent=windUsed?'Used':energy<55?'Ready':'Low stamina';$('smuggle').disabled=!(gameState==='playing'&&!smuggleUsed&&!activeCarrier&&flanked.some(f=>f.travel>=.24&&!f.smuggling&&laneWaypoints(f,ballM))); $('smuggleSub').textContent=smuggleUsed?'Used':activeCarrier?'In progress':flanked.length?('Flank '+Math.round(Math.max(...flanked.map(f=>f.travel))*100)+'%'):'Send a flank';for(const id of ['rally','smuggle','wind'])$(id).classList.toggle('ready',!$(id).disabled);$('select').disabled=gameState!=='playing';$('select').classList.toggle('selected',selecting);$('select').textContent=selecting?'DRAG / QUICK PICK':chosen.size?`${chosen.size} SELECTED`:'SELECT SQUAD';$('flankLeft').disabled=gameState!=='playing'||!!activeCarrier||!chosen.size||!flankOptions.left;$('flankRight').disabled=gameState!=='playing'||!!activeCarrier||!chosen.size||!flankOptions.right;$('push').disabled=gameState!=='playing';$('hint').textContent=activeCarrier?'Ba’ following '+activeCarrier.laneName:selecting?'Drag over your players':hasRealGraph?'Push · defend · use real junctions':'Mapped routes approximate until live data loads';$('instructions').textContent=enemyRunActive?'Block the rival breakaway before the countdown ends.':selecting?'Drag a box around teammates; tap Select again to quick-pick four.':chosen.size?'Choose a connected lane. Smaller squads weaken the scrum less.':flanked.length?"Wait for your squad to advance, then smuggle the Ba'!":"Tap to push, hold to defend, or select teammates and send a flank.";
+ const next=$('nextTurn'),choice=queuedTurn||steerChoices.left||steerChoices.right;
+ next.textContent=queuedTurn?`ORDERED ${queuedTurn.which.toUpperCase()} · ${Math.max(0,Math.round(queuedTurn.dist-ownerSign()*ballM))}m`:choice?`${Math.max(0,Math.round(choice.dist-ownerSign()*ballM))}m TO JUNCTION`:elapsed<turnCooldownUntil?'TURN RECOVERING':'NO SIDE TURN NEARBY';
+ for(const k of ['left','right']){
+  const btn=$('steer'+k[0].toUpperCase()+k.slice(1)),value=steerChoices[k];
+  btn.disabled=gameState!=='playing'||!!activeCarrier||elapsed<turnCooldownUntil||(!queuedTurn&&!value);
+  btn.classList.toggle('active',queuedTurn?.which===k);
+  $('steer'+k[0].toUpperCase()+k.slice(1)+'Name').textContent=value?turnLabel(value):'No side route';
+ }
+ $('steerStraight').disabled=gameState!=='playing'||!!activeCarrier;$('steerStraight').classList.toggle('active',!queuedTurn);
+ if(queuedTurn)$('instructions').textContent=activeBlockade()
+   ?`Rivals guard ${turnLabel(queuedTurn)}. Build pressure or BREAK DEFENCE; tap STRAIGHT to fake them out.`
+   :`Queued ${queuedTurn.which.toUpperCase()} at ${turnLabel(queuedTurn)} — keep pushing to reach the junction. Cancel with STRAIGHT.`;
+}
+function beginThrow(){
+ reset(); // Prepare both teams and the connected street graph, but do not start the match clock yet.
+ gameState='throw';throwFlight=null;throwOutcome=null;
+ throwState={aim:'own',style:'loft',phase:'power',seconds:0,power:0,needle:0,accuracy:0,lockedPower:0};
+ $('overlay').classList.remove('hidden');$('overlay').classList.add('throw-screen');$('overlay').style.alignItems='center';
+ showThrowUI();updateHUD();
+}
+function showThrowUI(){
+ const aimName=side==='up'?"UPPIE SIDE":"DOONIE SIDE",rivalName=side==='up'?"DOONIE SIDE":"UPPIE SIDE";
+ $('modal').innerHTML=`<div class="throw-modal"><div class="eyebrow">MERCAT CROSS · THE THROW-UP</div><h2>HOW WILL YOU<br><span style="color:var(--gold)">THROW THE BA’?</span></h2>
+ <p class="desc">Pick a direction and a throwing style. Tap once to lock power, then again when the accuracy needle hits the gold centre.</p>
+ <div class="throw-label"><span>AIM</span><span>Where the scrum begins</span></div>
+ <div class="throw-choice" role="group" aria-label="Throw direction"><button data-aim="own" class="active">${aimName}<small>Early ground</small></button><button data-aim="centre">MERCAT CROSS<small>Rally charge</small></button><button data-aim="rival">${rivalName}<small>Counterattack</small></button></div>
+ <div class="throw-label"><span>THROW STYLE</span><span>Different power / accuracy risks</span></div>
+ <div class="throw-choice" role="group" aria-label="Throw style"><button data-style="loft" class="active">HIGH LOFT<small>Forgiving</small></button><button data-style="drive">POWER DRIVE<small>Longer, risky</small></button><button data-style="skim">LOW SKIM<small>Fast, precise</small></button></div>
+ <div class="throw-gauge"><div class="throw-label" style="margin:0 0 7px"><span id="throwMeterName">POWER</span><span id="throwMeterNumber">0%</span></div><div class="throw-track" role="progressbar" aria-label="Throw power or accuracy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="throwTrack"><span class="throw-sweet" id="throwSweet"></span><span class="throw-needle" id="throwNeedle"></span></div><div class="throw-tick"><span id="throwLow">SOFT</span><span id="throwHigh">FULL POWER</span></div></div>
+ <div class="throw-result" id="throwCue">Aim for about 70% power</div>
+ <button class="primary" id="throwAction">LOCK POWER</button><button class="secondary" id="throwBack">CHANGE TEAM / DIFFICULTY</button>
+ <p class="throw-tip">Arcade throw-up: the real Kirkwall Ba’ throw-up is ceremonial and not a golf-style contest.</p></div>`;
+ for(const b of $('modal').querySelectorAll('[data-aim]'))b.onclick=()=>{throwState.aim=b.dataset.aim;for(const t of $('modal').querySelectorAll('[data-aim]'))t.classList.toggle('active',t===b);updateThrowMeter()};
+ for(const b of $('modal').querySelectorAll('[data-style]'))b.onclick=()=>{throwState.style=b.dataset.style;for(const t of $('modal').querySelectorAll('[data-style]'))t.classList.toggle('active',t===b);updateThrowMeter()};
+ $('throwAction').onclick=actOnThrow;$('throwBack').onclick=showMenu;
+ updateThrowMeter();
+}
+function updateThrowMeter(){
+ if(gameState!=='throw')return;
+ const t=throwState,phase=t.phase,power=phase==='power'?t.power:t.lockedPower;
+ const measure=phase==='power'?t.power:t.needle;
+ const ideal=t.style==='loft'?.63:t.style==='drive'?.74:.84;
+ $('throwSweet').style.left=((phase==='power'?ideal:.5)*100-6)+'%';
+ $('throwNeedle').style.left=(measure*100).toFixed(1)+'%';
+ $('throwTrack').setAttribute('aria-valuenow',Math.round(measure*100));
+ $('throwMeterName').textContent=phase==='power'?'POWER — LOCK YOUR SWING':'ACCURACY — TIME THE RELEASE';
+ $('throwMeterNumber').textContent=Math.round(measure*100)+'%';
+ $('throwLow').textContent=phase==='power'?'SOFT':'EARLY';$('throwHigh').textContent=phase==='power'?'FULL POWER':'LATE';
+ $('throwCue').textContent=phase==='power'?'Gold target: '+Math.round(ideal*100)+'% · '+t.style.toUpperCase():'Locked power '+Math.round(power*100)+'% · hit the centre!';
+ $('throwAction').textContent=phase==='power'?'LOCK POWER':'THROW THE BA’!';
+}
+function actOnThrow(){
+ if(gameState!=='throw')return;
+ if(throwState.phase==='power'){
+  throwState.lockedPower=throwState.power;throwState.phase='accuracy';throwState.seconds=0;beep(490,.10);updateThrowMeter();return;
+ }
+ const t=throwState;const aim=t.aim,style=t.style,power=t.lockedPower;
+ const accuracy=clamp(1-Math.abs(t.needle-.5)*2,0,1);
+ const targetPower=style==='loft'?.63:style==='drive'?.74:.84;
+ const powerScore=clamp(1-Math.abs(power-targetPower)/.65,0,1);
+ const precision=clamp(accuracy*(style==='loft'?1.05:style==='drive'?1:.93)*.7+powerScore*.30,0,1);
+ const wellCaught=precision>.62,poor=precision<.36;
+ const owner=ownerSign(),dir=aim==='own'?owner:aim==='rival'?-owner:0;
+ const effectiveDistance=(8+power*(style==='loft'?14:style==='drive'?22:18))*precision;
+ // Always land the Ba' on the connected central street. Never throw through buildings.
+ let landing=dir*effectiveDistance;
+ if(aim==='centre')landing=owner*(wellCaught?3:0);
+ if(poor)landing=-owner*(5+(1-precision)*11); // A mishit yields the ball to the opposition.
+ landing=clamp(landing,-Math.min(45,totalUp),Math.min(45,totalDown));
+ const rally=aim==='centre'?Math.round(12+precision*22):aim==='rival'?Math.round(12+precision*34):Math.round(precision*12);
+ throwOutcome={aim,style,power:+power.toFixed(3),accuracy:+accuracy.toFixed(3),precision:+precision.toFixed(3),landing:+landing.toFixed(2),wellCaught,poor,rally};
+ throwLaunches++;throwFlight={landing,style,t:0,duration:style==='loft'?1.85:style==='drive'?1.25:1.05};
+ $('overlay').classList.add('hidden');$('overlay').classList.remove('throw-screen');$('overlay').style.alignItems='center';gameState='throwflight';beep(620,.14);updateHUD();
+}
+function completeThrow(){
+ if(!throwFlight||!throwOutcome)return;
+ ballM=throwOutcome.landing;
+ rallyCharge=Math.min(100,rallyCharge+throwOutcome.rally);
+ tapPower=throwOutcome.poor?0:throwOutcome.wellCaught?2.1:.7;
+ if(throwOutcome.poor)energy=Math.max(0,energy-9);
+ const message=throwOutcome.poor?'MISHIT! OPPOSITION CLAIMS THE BA’':throwOutcome.wellCaught?'CLEAN THROW! SCRUM ADVANTAGE':'BA’ UP! FIGHT FOR IT!';
+ throwFlight=null;gameState='playing';enemySurgeAt+=2.5;enemyRunAt+=3;
+ steerChoices=makeTurnChoices();flankRoutes();nextTurnRefresh=elapsed+2.8;
+ notify(message);beep(throwOutcome.poor?230:820,.23);updateHUD();
+}
+function reset(){if(queuedRealGraph){prepare(queuedRealGraph);queuedRealGraph=null;}cfg=LEVELS[difficulty];gameState='playing';liveForceOwn=2.7;liveForceEnemy=cfg.enemyBase;elapsed=0;gameTime=cfg.round;score=0;energy=100;ballM=0;momentum=0;tapPower=0;rallyCharge=0;rallyUntil=0;smuggleUsed=false;windUsed=false;activeCarrier=null;flanked=[];chosen.clear();selecting=false;lasso=null;holding=false;combo=0;peakCombo=0;lastTapAt=0;totalTaps=0;intercepted=0;enemySurgeAt=difficulty==='veteran'?8:difficulty==='standard'?14:difficulty==='training'?17:12;enemyWarned=false;enemySurgeUntil=0;enemySurgeCount=0;enemyRunAt=difficulty==='training'?27:difficulty==='standard'?24:19;enemyRunActive=false;enemyRunDeadline=0;enemyRunCount=0;blocks=0;runFailures=0;redZone=0;bracedSurgeTime=0;surgeRewarded=false;opponentWave=0;cam=pointAt(0);queuedTurn=null;steerChoices={left:null,right:null};turnCooldownUntil=0;turningUntil=0;turnsTaken=0;turnsRejected=0;nextTurnRefresh=0;
+ aiBlock=null;aiReactionAt=0;aiFeints=0;aiBlocksBroken=0;aiBlocksHeld=0;aiPursuits=0;aiChaseEscapes=0;
+ units=Array.from({length:16},(_,id)=>({id}));$('overlay').classList.add('hidden');$('mapStatus').textContent=hasRealGraph?'LIVE KIRKWALL STREET ROUTES':'APPROXIMATE STREET FALLBACK';flankRoutes();steerChoices=makeTurnChoices();nextTurnRefresh=elapsed+2.8;updateHUD()}
+function push(){if(gameState!=='playing'||selecting)return;const now=performance.now(),gap=lastTapAt?now-lastTapAt:999;
+ if(gap<75)return;combo=(gap>=110&&gap<=590)?Math.min(combo+1,12):1;peakCombo=Math.max(peakCombo,combo);lastTapAt=now;totalTaps++;
+ const impulse=energy>=5?1:energy>1?.53:.17;energy=clamp(energy-cfg.tapCost,0,100);tapPower=clamp(tapPower+impulse*(.96+combo*.065),0,12);rallyCharge=clamp(rallyCharge+impulse*(2.25+combo*.14),0,100);score+=Math.round((4+combo)*impulse);
+ if(combo>=5&&combo%5===0){notify('SCRUM COMBO x'+combo+'!');beep(570+combo*23,.08)}else if(Math.random()<.15)beep(300+score%150,.03);updateHUD()}
+function rally(){if(gameState!=='playing'||rallyCharge<55||rallyUntil>elapsed)return;rallyCharge-=55;rallyUntil=elapsed+5;
+ for(const f of flanked)if(f.pursuit)f.pursuit.progress=Math.max(0,f.pursuit.progress-.17);
+ notify(flanked.some(f=>f.pursuit)?'RALLY DRAWS AWAY THE MARKERS!':'YOUR SCRUM SURGES!');beep(650,.18);updateHUD()}
+function wind(){if(gameState!=='playing'||windUsed||energy>=55)return;windUsed=true;energy=100;notify('SECOND WIND!');beep(720,.15);updateHUD()}
+function sendFlank(which){
+ const opt=flankOptions[which];if(!opt||!chosen.size||gameState!=='playing'||activeCarrier)return;
+ const anchored=laneWaypoints(opt,ballM);
+ if(!anchored){notify('LANE ENTRY PASSED — PICK THE NEXT JUNCTION');flankRoutes();updateHUD();return;}
+ const ids=[...chosen].filter(id=>!flanked.some(s=>s.ids.includes(id)));if(!ids.length)return;
+ flanked.push({ids,route:opt.path.slice(),waypoints:anchored.points,travel:0,which,laneName:anchored.laneName,smuggling:false,
+   pursuitAt:elapsed+AI_REACTION[difficulty]+1.1,pursuit:null});
+ chosen.clear();selecting=false;notify(ids.length+' PLAYERS HEADING DOWN '+anchored.laneName.toUpperCase());beep(560,.08);
+ flankOptions={left:null,right:null};updateHUD();
+}
+function smuggle(){
+ if(gameState!=='playing'||smuggleUsed||activeCarrier)return;
+ const eligible=flanked.filter(f=>f.travel>=.24&&!f.smuggling).sort((a,b)=>b.travel-a.travel);
+ let picked=null,trip=null;
+ for(const f of eligible){const candidate=laneWaypoints(f,ballM);if(candidate){picked=f;trip=candidate;break;}}
+ if(!picked){notify(eligible.length?'MISSED THE LANE ENTRANCE':'SEND A SQUAD DOWN A SIDE LANE FIRST');return;}
+ smuggleUsed=true;
+ activeCarrier={points:trip.points,route:picked.route.slice(),t:0,ids:picked.ids.slice(),which:picked.which,
+   laneName:trip.laneName,phase:'out',checked:false,length:trip.length,startM:ballM,joinM:trip.joinM,
+   pursuit:picked.pursuit,defenderCount:picked.pursuit?.strength||0};
+ picked.smuggling=true;holding=false;
+ notify('BA’ ENTERS '+trip.laneName.toUpperCase()+' — FOLLOW THE LANE!');beep(950,.18);updateHUD();
+}
+function endMatch(win,territory=false){if(gameState!=='playing')return;gameState='ended';if(win){score+=Math.ceil(gameTime)*15;winStreak++;beep(840,.32)}else{winStreak=0;beep(195,.18)}try{const key='bav8-'+difficulty+'-'+side,best=Number(localStorage.getItem(key)||0);if(score>best)localStorage.setItem(key,''+score)}catch{}let goal=side==='up'?"Mackinson's Corner":"Kirkwall Harbour";$('modal').innerHTML=`<div class="eyebrow">${win?(territory?'TERRITORY WON':'GOALED!'):'MATCH OVER'}</div><h1>${win?'YOUR SIDE WINS':'THE BA\'S GONE'}</h1><p>${territory?(win?'Your side held the most ground as the arcade round ended.':'The opposition held more ground when time expired.'):(win?`Your team pushed the Ba’ to ${goal}.`:`${gameTime<=0?'Time ran out.':'The opposition reached their goal.'} Both sides fought for every street.`)}</p><div class="resultscore">${score.toLocaleString()}</div><div class="best">${totalTaps} pushes · best combo x${peakCombo} · ${intercepted} intercepted smuggles · ${blocks} rival runs blocked · ${runFailures} missed · ${turnsTaken} lane turns · ${aiFeints} feints · ${aiBlocksBroken} junctions broken · ${aiChaseEscapes} chases escaped · throw accuracy ${throwOutcome?Math.round(throwOutcome.accuracy*100):0}%</div><button class="primary" id="again">PLAY AGAIN</button><button class="secondary" id="menuBack" style="margin-top:10px;width:100%">CHANGE TEAM</button>`;$('overlay').classList.remove('hidden');$('again').onclick=beginThrow;$('menuBack').onclick=showMenu;updateHUD()}
+function showMenu(){$('overlay').classList.remove('throw-screen');$('overlay').style.alignItems='center';throwFlight=null;throwOutcome=null;gameState='menu';ballM=0;momentum=0;liveForceOwn=2.7;liveForceEnemy=2.7;holding=false;chosen.clear();selecting=false;activeCarrier=null;flanked=[];$('modal').innerHTML=`<div class="eyebrow">Kirkwall · Orkney</div><h1>THE BA'<br><span style="color:var(--gold)">BATTLE</span></h1><p>Fight for Kirkwall street junctions. The opposition now marks your chosen lane, can block your turn, and chases smuggling squads. Use STRAIGHT to fake a turn, BREAK DEFENCE to clear a junction, and RALLY to distract chasing defenders.</p><div class="teamrow"><button class="team ${side==='up'?'selected':''}" id="teamUp">UPPIES<small>To Mackinson's Corner</small></button><button class="team ${side==='down'?'selected':''}" id="teamDown">DOONIES<small>To Kirkwall Harbour</small></button></div><div class="difficultyrow" role="group" aria-label="Difficulty">${Object.entries(LEVELS).map(([k,v])=>`<button class="difficulty ${difficulty===k?'active':''}" id="level-${k}">${v.label}<small>${k==='training'?'Learn the ropes':k==='standard'?'A fair contest':k==='hard'?'V6 challenge':'Relentless AI'}</small></button>`).join('')}</div><button class="primary" id="start">THROW UP THE BA'</button><div class="rulechips"><span>KIRKWALL STREET JUNCTIONS</span><span>OPPOSING SCRUMS</span><span>OPPOSITION WAVES</span><span>THROW-UP SKILL SHOT</span><span>BLOCKED JUNCTIONS</span><span>FAKE TURNS</span><span>RIVAL PURSUIT</span></div><p class="footnote">A fictional fast arcade game inspired by the historic Ba’, not its actual rules. Routes depend on available map data.</p>`;$('overlay').classList.remove('hidden');bindMenu();updateHUD()}
+function bindMenu(){for(const [id,s] of [['teamUp','up'],['teamDown','down']])$(id).onclick=()=>{side=s;$('teamUp').classList.toggle('selected',s==='up');$('teamDown').classList.toggle('selected',s==='down');updateHUD()};$('start').onclick=beginThrow;for(const k of Object.keys(LEVELS))$('level-'+k)?.addEventListener('click',()=>selectDifficulty(k))}
+function recalcFlanks(now){if(!graph||gameState!=='playing')return;if(now-roundSeed>5){roundSeed=now;flankRoutes()}}
+function update(dt,now){
+ if(gameState==='throw'){
+  throwState.seconds+=dt;
+  if(throwState.phase==='power')throwState.power=.05+.95*(.5-.5*Math.cos(throwState.seconds*3.0));
+  else throwState.needle=.5-.5*Math.cos(throwState.seconds*4.5);
+  updateThrowMeter();return;
+ }
+ if(gameState==='throwflight'){
+  if(throwFlight){throwFlight.t=Math.min(1,throwFlight.t+dt/throwFlight.duration);if(throwFlight.t>=1)completeThrow()}
+  return;
+ }
+ if(gameState!=='playing')return;
+ elapsed+=dt;gameTime=Math.max(0,gameTime-dt);energy=clamp(energy+dt*(holding?0:cfg.regen),0,100);
+ if(holding)energy=clamp(energy-dt*12,0,100);tapPower*=Math.exp(-dt*cfg.decay);rallyCharge=Math.max(0,rallyCharge-dt*.12);
+ if(lastTapAt&&now-lastTapAt>1250)combo=0;
+ opponentWave=.4*Math.sin(elapsed*.85)+.28*Math.sin(elapsed*2.25);
+ if(!enemyWarned&&elapsed>=enemySurgeAt-2.4){enemyWarned=true;notify('OPPOSITION GATHERING!')}
+ if(elapsed>=enemySurgeAt){enemySurgeUntil=elapsed+3.6;enemySurgeCount++;bracedSurgeTime=0;surgeRewarded=false;enemySurgeAt=elapsed+cfg.surgeEvery+(enemySurgeCount%2)*1.8;enemyWarned=false;notify('OPPOSITION SURGE!');beep(210,.21)}
+ if(enemySurgeUntil>elapsed&&holding&&energy>2)bracedSurgeTime+=dt;
+ if(enemySurgeCount>0&&enemySurgeUntil<=elapsed&&!surgeRewarded){surgeRewarded=true;if(bracedSurgeTime>=1.2){score+=125;notify('SURGE HELD! +125');beep(745,.2)}}
+  // Independent tactical AI: the rival side sends a breakaway squad periodically.
+  // Blocking requires a deliberate decision and stamina. Ignoring the warning loses territory.
+  if(!enemyRunActive&&elapsed>=enemyRunAt){enemyRunActive=true;enemyRunCount++;enemyRunDeadline=elapsed+(difficulty==='veteran'?3.3:difficulty==='standard'?5.3:4.4);notify('RIVAL SIDE RUN! BLOCK THE LANE');beep(220,.18)}
+  if(enemyRunActive&&elapsed>=enemyRunDeadline){enemyRunActive=false;runFailures++;if(!activeCarrier)ballM=clamp(ballM-ownerSign()*cfg.backlash,-totalUp,totalDown);energy=Math.max(0,energy-8);tapPower=Math.max(0,tapPower-3);enemyRunAt=elapsed+Math.max(11,cfg.surgeEvery+4);notify('THE BA’ SLIPS PAST! -'+cfg.backlash+'m');beep(175,.22)}
+  rivalAI(dt);
+  const nFlank=flanked.reduce((n,q)=>n+q.ids.length,0),sign=ownerSign();
+ if(activeCarrier){
+  const carrier=activeCarrier;
+  const rate=dt*(carrier.phase==='return'?100:clamp(carrier.length/7,37,105))/Math.max(1,carrier.length);
+  carrier.t=clamp(carrier.t+(carrier.phase==='return'?-rate:rate),0,1);
+  if(carrier.phase==='out'&&!carrier.checked&&carrier.t>=.51){
+   carrier.checked=true;
+   const chaseNear=carrier.pursuit&&carrier.t-carrier.pursuit.progress<.31;
+    const odds=clamp((difficulty==='training'?.24:difficulty==='standard'?.31:difficulty==='hard'?.42:.52)
+      -carrier.ids.length*.028+(enemySurgeUntil>elapsed?.10:0)
+      +(chaseNear?.22:0)-(rallyUntil>elapsed?.12:0),.07,.72);
+   if(Math.random()<odds){intercepted++;carrier.phase='return';flanked=flanked.filter(f=>!f.smuggling);tapPower=0;notify('INTERCEPTED! BA’ COMING BACK DOWN THE LANE');beep(180,.24);}
+  }
+  if(carrier.phase==='return'&&carrier.t<=0){
+    ballM=carrier.startM;activeCarrier=null;flankRoutes();notify('BA’ BACK AT THE SCRUM');
+  }else if(carrier.phase==='out'&&carrier.t>=1){
+    // The lane ends at an ACTUAL connected rejoin node on the existing scrum route.
+    ballM=clamp(carrier.joinM,-totalUp,totalDown);
+    if(carrier.pursuit)aiChaseEscapes++;
+    flanked=flanked.filter(f=>!f.smuggling);activeCarrier=null;
+    tapPower=clamp(tapPower+2,0,12);score+=200;flankRoutes();
+    notify('BA’ REJOINS FROM '+carrier.laneName.toUpperCase()+'! +200');beep(800,.26);
+  }
+ }else{
+  const own=2.7+Math.min(12,tapPower)*cfg.tapScale+(rallyUntil>elapsed?1.95:0)+(holding&&energy>2?1.9:0)-nFlank*.27-(turningUntil>elapsed?.55:0);
+  const junctionPressure=defendedJunction()?1.1:0;
+  const defendersAway=aiBlock&&!activeBlockade()&&aiBlock.until>elapsed?-.65:0;
+  const chaseCost=Math.min(0.45,flanked.filter(f=>f.pursuit).length*.17);
+  const enemy=cfg.enemyBase+junctionPressure+defendersAway-chaseCost+opponentWave*.9+(enemySurgeUntil>elapsed?cfg.surge:0)+Math.max(0,ballM*sign/Math.max(1,sign===-1?totalUp:totalDown))*cfg.enemyAdvance+(tapPower>7?.65:0)+(nFlank>=6?.8:0);
+  liveForceOwn=Math.max(.5,own);liveForceEnemy=Math.max(.5,enemy);
+  const diff=liveForceOwn-liveForceEnemy;
+  const target=Math.min(18,Math.max(-23,diff*6.5))*sign;
+  momentum=clamp(momentum+(target-momentum)*Math.min(1,dt*2.4),-23,18);if(holding&&energy>2&&momentum*sign>0)momentum*=.55;
+  ballM=clamp(ballM+momentum*dt,-totalUp,totalDown);
+ }
+ for(let i=flanked.length-1;i>=0;i--){const f=flanked[i];if(!f.smuggling){f.travel=clamp(f.travel+dt*.115,0,1);if(f.travel>=1){flanked.splice(i,1);tapPower=clamp(tapPower+1.6,0,12);notify('FLANK REJOINS THE SCRUM!')}}}
+  if(queuedTurn)checkPendingTurn();
+  if(!queuedTurn&&elapsed>=nextTurnRefresh){steerChoices=makeTurnChoices();nextTurnRefresh=elapsed+2.8;}
+  recalcFlanks(elapsed);
+  if(gameTime<=0)endMatch(ballM*sign>(difficulty==='training'?30:difficulty==='standard'?45:difficulty==='hard'?70:110),true);else if(!activeCarrier&&ballM*sign >= (sign===-1?totalUp:totalDown)-1){ballM=sign*(sign===-1?totalUp:totalDown);endMatch(true)}else if(!activeCarrier&&ballM*sign <= -(sign===-1?totalDown:totalUp)+1)endMatch(false);
+ updateHUD()}
+function closestSpine(point){let best=0,d=Infinity;for(let i=0;i<spine.length;i++){let q=spine[i],dd=hypot(point.x-q.x,point.y-q.y);if(dd<d){d=dd;best=spineCum[i]-originM}}return best}
+function pointerPt(e){let r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function selectRectangle(a,b){if(!selecting||gameState!=='playing')return;let x0=Math.min(a.x,b.x),x1=Math.max(a.x,b.x),y0=Math.min(a.y,b.y),y1=Math.max(a.y,b.y),isDrag=hypot(b.x-a.x,b.y-a.y)>12;const matches=[];for(let i=0;i<16;i++){if(flanked.some(s=>s.ids.includes(i)))continue;let q=worldToScreen(playerWorld(i,true,performance.now()));if(isDrag?(q.x>=x0&&q.x<=x1&&q.y>=y0&&q.y<=y1):(hypot(q.x-b.x,q.y-b.y)<15))matches.push(i)}chosen.clear();for(const i of matches.slice(0,8))chosen.add(i);selecting=false;notify(chosen.size?chosen.size+' PLAYERS SELECTED'+(matches.length>8?' · MAX 8':''):'NO PLAYERS SELECTED');updateHUD()}
+let pointerStart=null;
+canvas.addEventListener('pointerdown',e=>{if(gameState!=='playing')return;e.preventDefault();let p=pointerPt(e);pointerStart=p;if(selecting){lasso={x:p.x,y:p.y,tx:p.x,ty:p.y};canvas.setPointerCapture?.(e.pointerId)}else {push();holding=true;canvas.setPointerCapture?.(e.pointerId)}});canvas.addEventListener('pointermove',e=>{if(lasso){const p=pointerPt(e);lasso.tx=p.x;lasso.ty=p.y}});canvas.addEventListener('pointerup',e=>{holding=false;if(lasso&&pointerStart){selectRectangle(pointerStart,pointerPt(e));lasso=null;pointerStart=null}});canvas.addEventListener('pointercancel',()=>{holding=false;lasso=null;pointerStart=null});
+$('push').addEventListener('pointerdown',e=>{if(gameState!=='playing')return;e.preventDefault();push();holding=true;});for(const ev of ['pointerup','pointercancel','pointerleave'])$('push').addEventListener(ev,()=>{holding=false});
+$('steerLeft').onclick=()=>planTurn('left');$('steerRight').onclick=()=>planTurn('right');$('steerStraight').onclick=()=>planTurn('straight');$('select').onclick=()=>{if(gameState!=='playing')return;if(selecting){chosen.clear();for(const i of [8,9,10,11])if(!flanked.some(f=>f.ids.includes(i)))chosen.add(i);selecting=false;notify(chosen.size+' REARGUARD PLAYERS SELECTED')}else{selecting=true;chosen.clear();notify('DRAG A BOX OR TAP SELECT AGAIN')}updateHUD()};$('flankLeft').onclick=()=>sendFlank('left');$('flankRight').onclick=()=>sendFlank('right');$('smuggle').onclick=smuggle;$('counterBlock').onclick=blockRun;$('rally').onclick=rally;$('wind').onclick=wind;$('restart').onclick=showMenu;$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent='SOUND '+(soundOn?'ON':'OFF')};$('zoom').onclick=()=>{zoomIndex=(zoomIndex+1)%3;WORLD_SCALE=[1.35,1.58,2.02][zoomIndex];$('zoom').textContent=['ZOOM 1×','ZOOM +','ZOOM ++'][zoomIndex];notify('VIEW '+(zoomIndex+1)+' / 3')};
+function size(){const r=$('mapbox').getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);size();
+// Best-effort live OSM centreline download. Fallback is visibly labelled, with no invented real street geometry claim.
+async function loadOSM(){const q=`[out:json][timeout:18];way["highway"](${bbox});out geom;`;const urls=['https://overpass.kumi.systems/api/interpreter','https://overpass-api.de/api/interpreter'];for(const url of urls){try{const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),12000);let response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(q),signal:ctrl.signal});clearTimeout(t);if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json(),g=osmGraph(data);if(gameState==='playing'){queuedRealGraph=g;notify('REAL STREETS READY NEXT MATCH');return}prepare(g);notify('REAL STREET NETWORK LOADED');return}catch(e){console.info('Street source unavailable:',url,String(e).slice(0,100))}}$('mapStatus').textContent='FALLBACK STREETS — LIVE DATA UNAVAILABLE';$('geoStatus').textContent='Approximate routes · OSM tiles if available'}
+function tick(now){const dt=lastFrame?clamp((now-lastFrame)/1000,0,.05):.016;lastFrame=now;update(dt,now);render(now);requestAnimationFrame(tick)}
+prepare(fallbackGraph());bindMenu();updateHUD();requestAnimationFrame(tick);loadOSM();
+window.__baDebug=()=>({v:10,
+ aiBlock:aiBlock?{which:aiBlock.which,dist:aiBlock.dist,until:aiBlock.until,near:defendedJunction()}:null,
+ aiReactionAt,aiFeints,aiBlocksBroken,aiBlocksHeld,aiPursuits,aiChaseEscapes,
+ chasers:flanked.filter(f=>f.pursuit).map(f=>({which:f.which,strength:f.pursuit.strength,progress:f.pursuit.progress,lane:f.laneName})),carrierPhase:activeCarrier?.phase||null,carrierProgress:activeCarrier?.t??null,carrierPos:activeCarrier?carrierPosition():null,carrierWaypoints:activeCarrier?.points||null,carrierLength:activeCarrier?.length??null,carrierStartM:activeCarrier?.startM??null,carrierJoinM:activeCarrier?.joinM??null,ballPos:pointAt(ballM),flankDetail:flanked.map(f=>({which:f.which,travel:f.travel,route:f.route,waypoints:f.waypoints})),routeGraph:{nodes:graph?.nodes,edges:graph?.edges},spineWorld:spine,spineCum:spineCum,totalTaps,throwPhase:throwState.phase,throwAim:throwState.aim,throwStyle:throwState.style,throwMeter:throwState.phase==='power'?throwState.power:throwState.needle,throwOutcome,throwFlightProgress:throwFlight?.t,throwLaunches,mode:hasRealGraph?'osm':'fallback',nodes:graph?.nodes.length,edges:graph?.edges.length,spine:spine.length,team:side,ballM,totalUp,totalDown,energy,tapPower,score,state:gameState,selected:chosen.size,flanks:flanked.length,flankProgress:flanked.map(f=>+f.travel.toFixed(2)),flankAvailable:Object.fromEntries(Object.entries(flankOptions).map(([k,v])=>[k,!!v])),combo,peakCombo,holding,enemySurge:enemySurgeUntil>elapsed,enemySurgeCount,difficulty,enemyRunActive,enemyRunDeadline,enemyRunCount,blocks,runFailures,liveForceOwn,liveForceEnemy,smuggleActive:!!activeCarrier,smuggleUsed,intercepted,zoom:WORLD_SCALE,elapsed,turnsTaken,turnsRejected,turnCooldownUntil,steerChoices:Object.fromEntries(Object.entries(steerChoices).map(([k,v])=>[k,v?{name:v.name,ahead:+(v.dist-ownerSign()*ballM).toFixed(1),pathLength:v.path.length}:null])),queuedTurn:queuedTurn?{which:queuedTurn.which,ahead:+(queuedTurn.dist-ownerSign()*ballM).toFixed(1)}:null,spineIds:spine.map(p=>p.id)});
+})();
+</script></body></html>
