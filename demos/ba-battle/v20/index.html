@@ -301,7 +301,14 @@ function buyBooster(k){const cost=BOOST_PRICES[k];if(!cost||economy.coins<cost)r
  economy.coins-=cost;economy.boosts[k]++;saveEconomy();renderShop('boosts');updateHUD();return true}
 function cheerSound(){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext,ac=window.__baAudio||(window.__baAudio=new C());if(ac.state==='suspended')ac.resume();const length=Math.floor(ac.sampleRate*1.0),buffer=ac.createBuffer(1,length,ac.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<length;i++){const phase=i/length;data[i]=(Math.random()*2-1)*Math.sin(Math.PI*phase)*.6;}const source=ac.createBufferSource(),filter=ac.createBiquadFilter(),gain=ac.createGain();source.buffer=buffer;filter.type='bandpass';filter.frequency.value=500;filter.Q.value=.45;gain.gain.value=.15;source.connect(filter).connect(gain).connect(ac.destination);source.start()}catch{}}
 function useBoost(k){if(gameState!=='playing'||shopOpen||!economy.boosts[k])return false;
- if(k==='roar'){if(roarUntil>elapsed)return false;roarUntil=elapsed+7;energy=clamp(energy+18,0,100);tapPower=clamp(tapPower+1.1,0,12);contactPulse=1.3;cheerSound();notify('BA’ SHOUTS! COME ON '+(side==='up'?'UPPIES':'DOONIES')+'!');beep(610,.18)}
+ if(k==='roar'){if(roarUntil>elapsed)return false;roarUntil=elapsed+7;energy=clamp(energy+18,0,100);tapPower=clamp(tapPower+1.1,0,12);contactPulse=1.3;cheerSound();try{
+  if(soundOn&&'speechSynthesis' in window&&'SpeechSynthesisUtterance' in window){
+   const shout=new SpeechSynthesisUtterance('Come on '+(side==='up'?'Uppies':'Doonies')+'!');
+   shout.lang='en-GB';shout.rate=1.22;shout.pitch=.88;shout.volume=.55;
+   window.speechSynthesis.cancel();window.speechSynthesis.speak(shout);
+  }
+ }catch{}
+ notify('BA’ SHOUTS! COME ON '+(side==='up'?'UPPIES':'DOONIES')+'!');beep(610,.18)}
  else if(k==='deep'){if(energy>82)return false;energy=clamp(energy+45,0,100);tapPower=clamp(tapPower+2.6,0,12);notify('DIG DEEP! FIND THAT LAST PUSH!');beep(480,.14)}
  else if(k==='extra'){if(!smuggleUsed||activeCarrier)return false;smuggleUsed=false;notify('EXTRA SMUGGLE READY — SEND YOUR NEXT SQUAD!');beep(750,.16)}
  else return false;
