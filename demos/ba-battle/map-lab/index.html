@@ -31,7 +31,7 @@ const MERCAT={lat:58.98159,lon:-2.96045}, CATHEDRAL={lat:58.98144,lon:-2.95961};
 const WEST=-2.969,NORTH=58.9873,EAST=-2.954,SOUTH=58.9766;
 const BBOX=`${WEST},${SOUTH},${EAST},${NORTH}`, CACHE='ba-kirkwall-actual-osm-map-lab-20261123';
 const cos=Math.cos(MERCAT.lat*Math.PI/180), toXY=p=>({x:(p.lon-MERCAT.lon)*111320*cos,y:(MERCAT.lat-p.lat)*111320});
-let ways=[], buildings=[], water=[], graphCount=0, mapReady=false,viewport={x:0,y:0,scale:.69},screen={w:400,h:600},pointer=new Map(),dragFrom=null,needDraw=true,frame=0;
+let ways=[], buildings=[], water=[], graphCount=0, mapReady=false,viewport={x:0,y:-30,scale:.52},screen={w:400,h:600},pointer=new Map(),dragFrom=null,needDraw=true,frame=0;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const zoomLevels={overview:.52,street:1.46};
 function toScreen(p){const xy=toXY(p);return {x:(xy.x-viewport.x)*viewport.scale+screen.w/2,y:(xy.y-viewport.y)*viewport.scale+screen.h/2}}
@@ -70,7 +70,7 @@ async function load(){mapReady=false;ways=[];buildings=[];water=[];$('status').t
  const sources=[async()=>parseXML(await (await get(api)).text()), async()=>await (await get('https://overpass.kumi.systems/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(query)})).json(),async()=>await (await get('https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(query)})).json()];
  let error='No source responded';for(const getSource of sources){try{const data=await getSource();parse(data);try{localStorage.setItem(CACHE,JSON.stringify(data))}catch{}return}catch(e){error=String(e);console.info('Map provider issue',error)}}
  $('notice').hidden=false;$('notice').textContent='Authentic Kirkwall map data could not be loaded. No fictional streets have been substituted. Connect to the internet and tap RELOAD MAP.';$('status').textContent='Map unavailable';$('hint').textContent='This version deliberately never falls back to an invented map.';console.warn('Map failed',error);}
-function preset(k){viewport.x=0;viewport.y=k==='overview'?-30:0;viewport.scale=zoomLevels[k];requestDraw()}
+function preset(k){viewport.x=0;viewport.y=k==='overview'?-30:0;viewport.scale=zoomLevels[k];$('overview').classList.toggle('primary',k==='overview');$('street').classList.toggle('primary',k==='street');$('overview').setAttribute('aria-pressed',k==='overview'?'true':'false');$('street').setAttribute('aria-pressed',k==='street'?'true':'false');$('status').textContent=mapReady?('OSM '+ways.length+' ways · '+viewport.scale.toFixed(2)+'×'):'Loading OSM…';requestDraw()}
 $('overview').onclick=()=>preset('overview');$('street').onclick=()=>preset('street');$('reload').onclick=()=>{try{localStorage.removeItem(CACHE)}catch{}load()};
 const pt=e=>{const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
 canvas.addEventListener('pointerdown',e=>{e.preventDefault();pointer.set(e.pointerId,pt(e));canvas.setPointerCapture(e.pointerId)});
