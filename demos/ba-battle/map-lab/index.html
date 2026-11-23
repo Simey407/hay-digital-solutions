@@ -42,13 +42,31 @@ function visible(poly){let minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infi
 function drawPolygon(poly,fill,stroke){if(!visible(poly))return;path(poly);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.lineWidth=Math.max(.65,viewport.scale*.65);ctx.strokeStyle=stroke;ctx.stroke()}}
 function styleRoad(kind){if(['pedestrian','living_street'].includes(kind))return {w:7,fill:'#cfbea5'};if(['footway','path','steps','cycleway'].includes(kind))return {w:2.1,fill:'#c3b49d'};if(['service','track'].includes(kind))return {w:3.4,fill:'#cec8b6'};if(['primary','secondary','tertiary'].includes(kind))return {w:9.8,fill:'#a2aaae'};return {w:6,fill:'#c7c5b7'}}
 function label(text,p,important=false){const q=xyScreen(p);if(q.x<30||q.x>screen.w-30||q.y<48||q.y>screen.h-33)return;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=important?'900 12px system-ui':'700 10px system-ui';const w=ctx.measureText(text).width;ctx.fillStyle=important?'#263b40d9':'#e7e7d9d9';ctx.beginPath();ctx.roundRect(q.x-w/2-5,q.y-10,w+10,20,4);ctx.fill();ctx.fillStyle=important?'#ffe9bb':'#475251';ctx.fillText(text,q.x,q.y+.5)}
+// Draw road outlines in one pass, then connected road surfaces over them.
+// This removes the rounded oblong outlines between successive OSM ways.
+function drawContinuousRoads(){
+ const roads=ways.filter(w=>w.p.length>1&&visible(w.p));
+ const z=k=>['footway','path','steps','cycleway'].includes(k)?0:['service','track'].includes(k)?1:['pedestrian','living_street'].includes(k)?2:['primary','secondary','tertiary'].includes(k)?4:3;
+ roads.sort((a,b)=>z(a.kind)-z(b.kind));
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+ for(let pass=0;pass<2;pass++){
+  for(const w of roads){
+   const style=styleRoad(w.kind),core=clamp(style.w*viewport.scale,1.25,14),lip=clamp(viewport.scale*.85,.65,1.5);
+   path(w.p);
+   ctx.lineWidth=pass===0?core+lip*2:core;
+   ctx.strokeStyle=pass===0?'#b7b2a5':style.fill;
+   ctx.stroke();
+  }
+ }
+ ctx.restore();
+}
 function draw(){frame++;ctx.fillStyle='#cbd7ca';ctx.fillRect(0,0,screen.w,screen.h);
  if(!mapReady)return;
  // All features are projected from OSM latitude/longitude with north-up y-axis.
  // No rotated camera, perspective, invented roof rectangles or replacement grid.
  for(const poly of water)drawPolygon(poly,'#7eafbe','#4e91a5');
  for(let i=0;i<buildings.length;i++)drawPolygon(buildings[i],['#888986','#9f9790','#8f9d93','#9d9a8b'][i%4],'#767e7b');
- for(const w of ways){if(!visible(w.p))continue;const st=styleRoad(w.kind);path(w.p);ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=clamp((st.w+2)*viewport.scale,2.5,18);ctx.strokeStyle='#ede9dc';ctx.stroke();path(w.p);ctx.lineWidth=clamp(st.w*viewport.scale,1.2,14);ctx.strokeStyle=st.fill;ctx.stroke()}
+ drawContinuousRoads();
  // Named road labels are attached to the OSM way, not guessed screen coordinates.
  const seen=new Set();let written=0;
  const named=ways.filter(w=>w.name&&w.p.length>1).sort((a,b)=>{const near=w=>Math.min(...w.p.map(p=>Math.hypot(p.x-viewport.x,p.y-viewport.y)));return near(a)-near(b)});
