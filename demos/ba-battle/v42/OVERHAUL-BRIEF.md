@@ -19,3 +19,17 @@ Follow the ball and scrum from overhead with enough room to recognise a landmark
 Review a first-time playthrough with both sides, including one uninterrupted match per side, a tight close, smuggling, a rival surge, both finishes and rematch. Record time to first successful Good push, whether the player can describe what Hold does, and whether they spot an available bonus without prompting. Check readability on real iPhone Safari alongside browser checks at 360, 390 and 430 px. Use a connected isolated tester for account signup, locked allegiance, deletion and all four boards. Keep leaderboard results provisional until match verification can establish how the score was earned.
 
 Bring the strongest version of the core match to review before expanding cosmetics, progression or competitive features. Keep testing isolated from production and within the existing zero-spend constraint.
+
+## Engagement criteria for playtests
+
+Use [GameFlow](https://doi.org/10.1145/1077246.1077253) to evaluate focus, challenge, skill, control, goals, feedback, immersion and social play. Use [Mechanics, Dynamics and Aesthetics](https://www.cs.northwestern.edu/~hunicke/pubs/MDA.pdf) to connect each rule change to behaviour you can observe in a match. Apply [Apple’s motion guidance](https://developer.apple.com/design/human-interface-guidelines/motion) to keep feedback brief and tied to a meaningful event.
+
+| Criterion | What to observe in Ba’ Battle |
+| --- | --- |
+| Clear goal | A new player can identify their goal and explain what the distance bar means after the throw-up. |
+| Learnable challenge | Record time to first Good Push, first intentional brace and the most common mistimed release. |
+| Player control | The player can explain when they chose Good over risking Perfect and see the effect in the scrum. |
+| Feedback and concentration | Compare the same encounter with the new cue enabled and with Reduce Motion. Record whether the player notices the ready action, taps it intentionally and can still see the Ba’. |
+| Immersion and social play | Ask what felt distinctive to Kirkwall, whether a rematch was chosen voluntarily and whether the player could find the leaderboard after a match. |
+
+Record observations from first-time players and regular testers separately. The checklist measures behaviour and reported enjoyment.

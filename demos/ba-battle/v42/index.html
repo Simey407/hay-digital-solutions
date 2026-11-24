@@ -2090,7 +2090,13 @@ function updateHUD(){
  $('boostRoar').disabled=gameState!=='playing'||!economy.boosts.roar||roarUntil>elapsed;
  $('boostDeep').disabled=gameState!=='playing'||!economy.boosts.deep||energy>82;
  $('boostExtra').disabled=gameState!=='playing'||!economy.boosts.extra||!smuggleUsed||!!activeCarrier;
- for(const id of railActions){const action=$(id);if(action.hidden!==action.disabled)action.hidden=action.disabled;}
+ for(const id of railActions){
+  const action=$(id);
+  const ready=onPitch&&!action.disabled;
+  if(action.hidden===ready)action.hidden=!ready;
+  cueOnEntry(action,ready,action.querySelector('.rail-symbol'));
+ }
+ cueOnEntry($('holdLine'),onPitch&&(incoming||enemyRunActive),$('holdLine').querySelector('small'));
  updateDockEvents();
 
 
@@ -2566,7 +2572,10 @@ function finishDrive(cancelled=false){
  beep(grade.tone+Math.min(5,perfectStreak)*22,.085);
  nextPerfectBand();
  updateHUD();
- if(grade===perfectPush)showPerfectBonus();
+ if(grade===perfectPush){
+  shakeCue($('pressureValue'));
+  showPerfectBonus();
+ }
 }
 $('push').addEventListener('click',e=>{if(e.detail===0&&!driveHeld)tapPush();});
 $('push').addEventListener('keydown',e=>{
@@ -2710,6 +2719,23 @@ function tick(now){
 const railActions=['counterBlock','rally','smuggle','flankLeft','flankRight','wind','boostRoar','boostDeep','boostExtra'];
 const bonusPriority=['rally','wind','boostDeep','smuggle','boostExtra','counterBlock'];
 let dockBonusTarget=null,dockBonusUntil=0,shoutSpotlightUntil=0,perfectNoticeUntil=0;
+function shakeCue(part){
+ if(!part||reducedMotion.matches||matchPaused||typeof part.animate!=='function')return;
+ for(const animation of part.getAnimations())if(animation.id==='match-cue')animation.cancel();
+ const animation=part.animate([
+  {transform:'translateX(0)'},
+  {transform:'translateX(-3px) rotate(-6deg)',offset:.22},
+  {transform:'translateX(3px) rotate(6deg)',offset:.45},
+  {transform:'translateX(-1px) rotate(-2deg)',offset:.73},
+  {transform:'translateX(0)'}
+ ],{duration:310,easing:'ease-out'});
+ animation.id='match-cue';
+}
+function cueOnEntry(control,ready,part){
+ if(control.hasAttribute('data-cue-ready')===ready)return;
+ control.toggleAttribute('data-cue-ready',ready);
+ if(ready)shakeCue(part);
+}
 function showPerfectBonus(){
  const button=$('perfectBonus'),id=bonusPriority.find(key=>!$(key).disabled);
  if(id){
@@ -2723,6 +2749,7 @@ function showPerfectBonus(){
   words.textContent=label;
   button.replaceChildren(icon,words);
   button.hidden=false;
+  shakeCue(icon);
  }else{
   perfectNoticeUntil=elapsed+1.2;
   if(!$('boostRoar').disabled)shoutSpotlightUntil=elapsed+2.4;
