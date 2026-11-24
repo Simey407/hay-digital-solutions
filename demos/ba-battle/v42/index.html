@@ -655,6 +655,35 @@ html,body{background:#0e222a}
 .dock-shout #boostRoar strong{top:4px;right:4px;font-size:10px}
 .throw-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #modal .throw-options button{min-height:44px;font-size:clamp(12px,3.5vw,16px);padding:8px 4px}
+.dock-events{display:block;min-height:0;margin:2px 0 5px}
+.dock-news{display:flex;align-items:center;gap:7px;min-height:15px}
+#pitchTools.power-tray{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px;justify-content:center}
+.power-tray button{
+ position:relative;isolation:isolate;display:grid;justify-items:center;align-content:center;gap:2px;
+ flex:1 1 calc((100% - 24px)/5);max-width:110px;min-width:0;min-height:52px;
+ margin:0;padding:4px 2px;
+ border:1px solid #fff9;border-radius:10px;color:#121e28;
+ background:linear-gradient(155deg,var(--ready),var(--ready-low));
+ box-shadow:inset 0 1px 0 #fffd,0 2px 0 #06131e;
+ font:850 10px/1.08 system-ui;text-align:center;touch-action:manipulation;
+}
+.power-tray button .rail-symbol{display:block;width:19px;height:19px;grid-area:auto}
+.power-tray .rail-label{max-width:100%;overflow-wrap:anywhere}
+.power-tray button>small{display:none}
+.power-tray button>strong{
+ position:absolute;top:3px;right:4px;font:900 9px system-ui;
+}
+.power-tray button::after{
+ content:"";position:absolute;inset:0;border:2px solid #fff8;border-radius:inherit;pointer-events:none;
+}
+.power-tray button.perfect-spotlight::after{border-color:#fff7c4;box-shadow:0 0 8px #fff5a8}
+.power-tray button:focus-visible{outline:2px solid white;outline-offset:1px}
+.power-tray button:active{transform:translateY(1px) scale(.96);filter:brightness(1.11)}
+@media(prefers-reduced-motion:no-preference){
+ .power-tray button:enabled::after{animation:tray-throb 1.65s ease-in-out infinite}
+ .power-tray button.perfect-spotlight::after{animation-duration:.85s}
+ @keyframes tray-throb{0%,100%{opacity:.56}50%{opacity:1;box-shadow:inset 0 0 10px #fff7}}
+}
 </style><meta name="description" content="Play the Kirkwall Ba’ on mapped streets in this mobile arcade tester."></head>
 <body><main class="shell">
 <header class="top"><div class="brand">BA' BATTLE <small>KIRKWALL · ORKNEY</small></div><div class="top-actions"><div class="zoom-stepper" role="group" aria-label="Map zoom">
@@ -667,8 +696,7 @@ html,body{background:#0e222a}
  <progress id="replayProgress" value="0" max="1" aria-label="Replay progress"></progress>
 </section><div class="match-cues"><div id="finalStretch" class="final-stretch" hidden>FINAL STRETCH</div><div class="battle-alert" id="battleAlert" aria-live="polite"></div><div class="toast" id="toast" aria-live="polite"></div></div><div class="map-key" aria-hidden="true"><b>↑ N</b><span id="mapScale"></span></div><div class="junction-choice" id="junctionChoice" role="group" aria-label="Choose direction at next junction" hidden><div class="junction-title" id="junctionTitle">JUNCTION AHEAD</div><div class="junction-buttons"><button id="quickLeft" type="button">↶ LEFT</button><button id="quickStraight" type="button">↑ STRAIGHT</button><button id="quickRight" type="button">RIGHT ↷</button></div></div><div class="hints"><span class="source">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br><a id="mapData" download="kirkwall-odbl.json">Map data</a> <span id="geoStatus"></span></span><span class="minilabel" id="hint">PUSH to advance · HOLD to brace</span></div><div class="overlay" id="overlay"><div class="modal" id="modal"></div></div></section>
 <section class="bottom"><div class="dock-events"><div class="dock-news"><span id="rallyChargeText">Rally 0%</span><div class="crowd-call" id="crowdCall" aria-live="polite" hidden></div></div>
- <button class="dock-bonus" id="perfectBonus" type="button" hidden></button><div class="dock-shout" id="dockShout"></div>
- </div><div class="pressure"><span id="pressureLabel">SCRUM PRESSURE</span><span id="pressureValue">Ready</span></div><div class="meter drive-meter" id="driveMeter" aria-hidden="true"><div id="pushMeter"></div></div><div class="meter blue"><div id="staminaMeter" style="width:100%"></div></div><div class="primary-actions"><button class="action" id="push" aria-label="Push. Press and hold for a short drive." disabled>PUSH</button><button class="hold-action" id="holdLine" disabled aria-label="Press and hold to resist opposing push">HOLD<small>BRACE</small></button></div><div class="wallet-strip"><span id="walletText">BA’ COINS: 45 · LOCAL DEMO</span><button id="openShop" type="button">BOOSTS</button></div><div class="boostbar" role="group" aria-label="Inventory boosters"><button id="boostRoar" disabled>Ba’ Shouts <strong id="roarQty">×1</strong><small>Stamina + surge</small></button><button id="boostDeep" disabled>Dig Deep <strong id="deepQty">×1</strong><small>Refill + pressure</small></button><button id="boostExtra" disabled>Extra Smuggle <strong id="extraQty">×1</strong><small>Another attempt</small></button></div><div class="counterbar" id="counterBar"><span id="counterText">OPPOSITION BREAKAWAY!</span><button id="counterBlock" disabled>BLOCK RUN</button></div><details class="tacticDetails" id="tacticDetails"><summary>STREET TACTICS · RALLY · SMUGGLE · FLANKS</summary><div class="controls"><button class="ability" id="rally" disabled>RALLY<small id="rallySub">Charge to unlock</small></button><button class="ability" id="smuggle" disabled>SMUGGLE BA'<small id="smuggleSub">Send a flank first</small></button><button class="ability" id="wind" disabled>SECOND WIND<small id="windSub">Refill stamina</small></button></div><div class="route-header"><span>DIRECT THE SCRUM · CONNECTED LANES</span><span id="nextTurn">Scanning the next junction…</span></div><div class="ai-intel" id="aiIntel" role="status" aria-live="polite">Rival scouts are watching the streets.</div><div class="steerrow" role="group" aria-label="Choose a direction for the scrum"><button class="steer" id="steerLeft" disabled>↶ LEFT <small id="steerLeftName">Finding lanes…</small></button><button class="steer active" id="steerStraight" disabled>↑ STRAIGHT <small>Stay on this street</small></button><button class="steer" id="steerRight" disabled>RIGHT ↷ <small id="steerRightName">Finding lanes…</small></button></div><div class="squadrow"><button class="mini" id="select" disabled>SELECT SQUAD</button><button class="mini" id="flankLeft" disabled>◀ LEFT LANE</button><button class="mini" id="flankRight" disabled>RIGHT LANE ▶</button></div></details><p class="statehint" id="instructions">Tap PUSH to advance; hold HOLD to brace. Choose a street when a junction appears.</p></section>
+ </div><div id="pitchTools" class="power-tray" role="group" aria-label="Ready power-ups and tactics" hidden></div><div class="pressure"><span id="pressureLabel">SCRUM PRESSURE</span><span id="pressureValue">Ready</span></div><div class="meter drive-meter" id="driveMeter" aria-hidden="true"><div id="pushMeter"></div></div><div class="meter blue"><div id="staminaMeter" style="width:100%"></div></div><div class="primary-actions"><button class="action" id="push" aria-label="Push. Press and hold for a short drive." disabled>PUSH</button><button class="hold-action" id="holdLine" disabled aria-label="Press and hold to resist opposing push">HOLD<small>BRACE</small></button></div><div class="wallet-strip"><span id="walletText">BA’ COINS: 45 · LOCAL DEMO</span><button id="openShop" type="button">BOOSTS</button></div><div class="boostbar" role="group" aria-label="Inventory boosters"><button id="boostRoar" disabled>Ba’ Shouts <strong id="roarQty">×1</strong><small>Stamina + surge</small></button><button id="boostDeep" disabled>Dig Deep <strong id="deepQty">×1</strong><small>Refill + pressure</small></button><button id="boostExtra" disabled>Extra Smuggle <strong id="extraQty">×1</strong><small>Another attempt</small></button></div><div class="counterbar" id="counterBar"><span id="counterText">OPPOSITION BREAKAWAY!</span><button id="counterBlock" disabled>BLOCK RUN</button></div><details class="tacticDetails" id="tacticDetails"><summary>STREET TACTICS · RALLY · SMUGGLE · FLANKS</summary><div class="controls"><button class="ability" id="rally" disabled>RALLY<small id="rallySub">Charge to unlock</small></button><button class="ability" id="smuggle" disabled>SMUGGLE BA'<small id="smuggleSub">Send a flank first</small></button><button class="ability" id="wind" disabled>SECOND WIND<small id="windSub">Refill stamina</small></button></div><div class="route-header"><span>DIRECT THE SCRUM · CONNECTED LANES</span><span id="nextTurn">Scanning the next junction…</span></div><div class="ai-intel" id="aiIntel" role="status" aria-live="polite">Rival scouts are watching the streets.</div><div class="steerrow" role="group" aria-label="Choose a direction for the scrum"><button class="steer" id="steerLeft" disabled>↶ LEFT <small id="steerLeftName">Finding lanes…</small></button><button class="steer active" id="steerStraight" disabled>↑ STRAIGHT <small>Stay on this street</small></button><button class="steer" id="steerRight" disabled>RIGHT ↷ <small id="steerRightName">Finding lanes…</small></button></div><div class="squadrow"><button class="mini" id="select" disabled>SELECT SQUAD</button><button class="mini" id="flankLeft" disabled>◀ LEFT LANE</button><button class="mini" id="flankRight" disabled>RIGHT LANE ▶</button></div></details><p class="statehint" id="instructions">Tap PUSH to advance; hold HOLD to brace. Choose a street when a junction appears.</p></section>
 <dialog class="pause-dialog" id="pauseDialog" aria-labelledby="pauseTitle">
  <h2 id="pauseTitle">Match paused</h2>
  <p id="pauseStatus">The Ba’ will wait.</p>
@@ -1994,14 +2022,12 @@ function updateHUD(){
  $('counterText').textContent=enemyRunActive?`RIVAL BREAKAWAY · ${Math.max(0,enemyRunDeadline-elapsed).toFixed(1)}s`:rivalOrder?`RIVAL TURN ${rivalOrder.which.toUpperCase()} · ${Math.max(0,Math.round(rivalOrder.dist-rivalOrder.direction*ballM))}m`:blockNow?'RIVAL BLOCKADE · KEEP YOUR ROUTE OPEN':'RIVAL BREAKAWAY';
  const junction=$('junctionChoice');
  const onPitch=gameState==='playing';
- $('pitchTools').hidden=!onPitch;
 
 
  const coming=Object.values(steerChoices).filter(Boolean).sort((a,b)=>(a.dist-ownerSign()*ballM)-(b.dist-ownerSign()*ballM))[0];
  const toGo=coming?coming.dist-ownerSign()*ballM:Infinity;
  const showJunction=gameState==='playing'&&!activeCarrier&&elapsed>=turnCooldownUntil&&toGo>=0&&toGo<=28;
  junction.hidden=!showJunction;
- $('pitchTools').classList.toggle('above-junction',showJunction);
  if(showJunction){
   $('junctionTitle').textContent=queuedTurn?'ORDER: '+queuedTurn.which.toUpperCase():Math.max(0,Math.ceil(toGo))+'m TO JUNCTION';
   $('quickLeft').hidden=!steerChoices.left;$('quickRight').hidden=!steerChoices.right;
@@ -2056,12 +2082,15 @@ function updateHUD(){
  $('boostRoar').disabled=gameState!=='playing'||!economy.boosts.roar||roarUntil>elapsed;
  $('boostDeep').disabled=gameState!=='playing'||!economy.boosts.deep||energy>82;
  $('boostExtra').disabled=gameState!=='playing'||!economy.boosts.extra||!smuggleUsed||!!activeCarrier;
+ let hasReadyAction=false;
  for(const id of railActions){
   const action=$(id);
   const ready=onPitch&&!action.disabled;
+  hasReadyAction||=ready;
   if(action.hidden===ready)action.hidden=!ready;
   cueOnEntry(action,ready,action.querySelector('.rail-symbol'));
  }
+ $('pitchTools').hidden=!hasReadyAction;
  cueOnEntry($('holdLine'),onPitch&&(incoming||enemyRunActive),$('holdLine').querySelector('small'));
  updateDockEvents();
 
@@ -2613,7 +2642,7 @@ function changeZoom(step){
 }
 function resetPresentation(){
  scrumBrace=0;
- dockBonusTarget=null;dockBonusUntil=0;shoutSpotlightUntil=0;perfectNoticeUntil=0;
+ dockBonusTarget=null;dockBonusUntil=0;perfectNoticeUntil=0;
  finishGoalReplay(false);
  recordedFrames=[];recordedTime=0;
  spectators=[];
@@ -2683,8 +2712,8 @@ function tick(now){
 }
 
 const railActions=['counterBlock','rally','smuggle','flankLeft','flankRight','wind','boostRoar','boostDeep','boostExtra'];
-const bonusPriority=['rally','wind','boostDeep','smuggle','boostExtra','counterBlock'];
-let dockBonusTarget=null,dockBonusUntil=0,shoutSpotlightUntil=0,perfectNoticeUntil=0;
+const bonusPriority=['rally','wind','boostDeep','smuggle','boostExtra','counterBlock','boostRoar'];
+let dockBonusTarget=null,dockBonusUntil=0,perfectNoticeUntil=0;
 function shakeCue(part){
  if(!part||reducedMotion.matches||matchPaused||typeof part.animate!=='function')return;
  for(const animation of part.getAnimations())if(animation.id==='match-cue')animation.cancel();
@@ -2703,44 +2732,19 @@ function cueOnEntry(control,ready,part){
  if(ready)shakeCue(part);
 }
 function showPerfectBonus(){
- const button=$('perfectBonus'),id=bonusPriority.find(key=>!$(key).disabled);
- if(id){
-  dockBonusTarget=id;
-  dockBonusUntil=elapsed+4.2;
-  const action=$(id);
-  button.dataset.family=action.dataset.family;
-  const label=action.querySelector('.rail-label').textContent;
-  const icon=action.querySelector('.rail-symbol').cloneNode(true);
-  const words=document.createElement('strong');
-  words.textContent=label;
-  button.replaceChildren(icon,words);
-  button.hidden=false;
-  shakeCue(icon);
- }else{
-  perfectNoticeUntil=elapsed+1.2;
-  if(!$('boostRoar').disabled)shoutSpotlightUntil=elapsed+2.4;
- }
+ dockBonusTarget=bonusPriority.find(id=>!$(id).disabled)||null;
+ dockBonusUntil=elapsed+4.2;
+ perfectNoticeUntil=elapsed+1.2;
+ if(dockBonusTarget)shakeCue($(dockBonusTarget).querySelector('.rail-symbol'));
  updateDockEvents();
 }
 function updateDockEvents(){
- const button=$('perfectBonus');
  if(dockBonusTarget&&(elapsed>=dockBonusUntil||$(dockBonusTarget).disabled||gameState!=='playing'))dockBonusTarget=null;
- button.hidden=!dockBonusTarget;
- $('boostRoar').classList.toggle('perfect-spotlight',gameState==='playing'&&elapsed<shoutSpotlightUntil&&!$('boostRoar').disabled);
- if(!$('boostRoar').disabled){
-  const status=$('boostRoar').querySelector('small');
-  if(status.textContent!=='Ready · tap')status.textContent='Ready · tap';
- }
+ for(const id of bonusPriority)$(id).classList.toggle('perfect-spotlight',id===dockBonusTarget);
  const rallyText=$('rallyChargeText');
- const label=elapsed<perfectNoticeUntil&&!dockBonusTarget?'Perfect · rally up':'Rally '+Math.floor(rallyCharge)+'%';
+ const label=elapsed<perfectNoticeUntil?'Perfect · rally up':'Rally '+Math.floor(rallyCharge)+'%';
  if(rallyText.textContent!==label)rallyText.textContent=label;
 }
-$('perfectBonus').onclick=()=>{
- const target=dockBonusTarget;
- if(target&&!$(target).disabled)$(target).click();
- dockBonusTarget=null;updateDockEvents();
-};
-
 function installDriveSpectrum(){
  const {early,late}=perfectBand(),risk=perfectRiskBand();
  const stops=[[0,'#79675d'],[okPush.early,'#a38150'],[goodPush.early,'#55dca2']];
@@ -2752,17 +2756,8 @@ function installDriveSpectrum(){
  $('driveMeter').style.setProperty('--drive-spectrum',`linear-gradient(90deg,${colors.join(',')})`);
 }
 function installControls(){
- const tools=document.createElement('div');
- tools.id='pitchTools';
- tools.className='pitch-tools';
- tools.hidden=true;
- tools.innerHTML=`<div class="action-rail action-left" role="group" aria-label="Street tactics"></div>
- <div class="action-rail action-right" role="group" aria-label="Boosts and recovery"></div>`;
- $('mapbox').appendChild(tools);
- const left=tools.querySelector('.action-left'),right=tools.querySelector('.action-right');
- for(const id of railActions.slice(0,5))left.append($(id));
- for(const id of railActions.slice(5))if(id!=='boostRoar')right.append($(id));
- $('dockShout').append($('boostRoar'));
+ const tools=$('pitchTools');
+ for(const id of ['boostRoar','counterBlock','rally','wind','boostDeep','boostExtra','smuggle','flankLeft','flankRight'])tools.append($(id));
  const labels={rally:'Rally',smuggle:'Smuggle Ba’',flankLeft:'Flank Left',flankRight:'Flank Right',wind:'Second Wind'};
  const families={counterBlock:'pressure',rally:'pressure',smuggle:'route',flankLeft:'route',
   flankRight:'route',wind:'recovery',boostRoar:'pressure',boostDeep:'boost',boostExtra:'boost'};
