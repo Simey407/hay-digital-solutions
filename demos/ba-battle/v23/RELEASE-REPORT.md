@@ -2,9 +2,19 @@
 
 24 November 2026 · Isolated tester for CEO review
 
-- Playable build commit [`ac4cf8f8fd452d9c245a8ba41577faa72b834155`](https://github.com/Simey407/hay-digital-solutions/commit/ac4cf8f8fd452d9c245a8ba41577faa72b834155)
-- [Play V23](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Simey407/hay-digital-solutions/ac4cf8f8fd452d9c245a8ba41577faa72b834155/demos/ba-battle/v23/index.html)
+- Playable build commit [`f46b47333fe32005fdccf71c6335979ff01c9021`](https://github.com/Simey407/hay-digital-solutions/commit/f46b47333fe32005fdccf71c6335979ff01c9021)
+- [Play V23](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Simey407/hay-digital-solutions/f46b47333fe32005fdccf71c6335979ff01c9021/demos/ba-battle/v23/index.html)
 - Branch `ba-battle-v23-testing`, based on testing commit `8009489eabd3f9d8492da986f9f61a7a5b782364`. V22 remains available on its existing branch for rollback.
+
+## Bird’s-eye camera update
+
+- Town View now starts at the approved Map Lab’s 0.52 CSS pixels per metre. District and Street scales are available from the map-scale button. Every view uses the same north-up overhead projection.
+- A resize observer keeps the canvas drawing buffer aligned to the map’s CSS dimensions when the dock appears. This removes vertical stretching during the change from menu to match.
+- Flat building fills and small top-down figures replace directionally shaded artwork. The ball stays on the ground projection during the throw and is highlighted with a ring. The compass and 50 m scale give a visual reference.
+- The larger overview uses the same OSM extract at its full bounds, so more of the town and harbour stay visible as the camera moves. The updated extract includes 1,014 highway ways, 3,124 building-tagged ways, five inland-water ways and the extended coastline. The graph has 4,195 nodes and 4,482 edges with 25 crossing segments flagged. The original 80-segment baseline, mapped starts and finishes are preserved.
+- Checked screenshots and all three scale presets at 360, 390 and 430 px. The connected turn and intercepted smuggle passed again. Both teams completed matches again under accelerated browser input. The published link passed the layout and input checks in Chromium and WebKit at all three widths, with no page errors.
+
+The implementation notes below describe the original V23 build before this camera update.
 
 ## Implemented and fixed
 
