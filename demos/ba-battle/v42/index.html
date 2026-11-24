@@ -603,6 +603,50 @@ html,body{background:#0e222a}
 .board-list li{padding:8px 0;border-bottom:1px solid #fff2}
 .board-list strong{float:right;margin-left:6px}
 .shell[data-cutaway] .hud,.shell[data-cutaway] .map-key,.shell[data-cutaway] .match-cues{visibility:hidden}
+/* Colour families reinforce the existing icons and names. */
+[data-family="pressure"]{--ready:#ffda50;--ready-low:#ff9e30;--halo:#ffad28}
+[data-family="recovery"]{--ready:#91ffbb;--ready-low:#38dfa0;--halo:#19ed99}
+[data-family="route"]{--ready:#8df4ff;--ready-low:#39bdf4;--halo:#25c9ff}
+[data-family="boost"]{--ready:#f6baff;--ready-low:#c68aff;--halo:#dc79ff}
+.action-rail button[data-family]:enabled,.action-rail #counterBlock[data-family]:enabled,
+.dock-shout #boostRoar[data-family]:enabled,.dock-bonus[data-family]:enabled{
+ position:relative;
+ color:#141d26;
+ background:linear-gradient(150deg,var(--ready),var(--ready-low));
+ border-color:#fff9;
+ box-shadow:0 2px 8px #10233299,inset 0 1px 1px #fffd;
+}
+.action-rail button[data-family]:enabled::before,.dock-shout button[data-family]:enabled::before,
+.dock-bonus[data-family]:not([hidden])::before{
+ content:"";position:absolute;inset:-3px;border:2px solid var(--halo);
+ border-radius:inherit;opacity:.8;pointer-events:none;
+}
+.action-rail button[data-family]:enabled .rail-label{
+ background:#112a35;color:#fff;border-bottom:2px solid var(--halo);
+}
+.action-rail button[data-family]:enabled .rail-symbol{animation:none}
+.action-rail button[data-family]:focus-visible,.dock-events button[data-family]:focus-visible{
+ outline:2px solid #17232b;outline-offset:2px;
+}
+.action-rail button[data-family]:enabled:active,.dock-events button[data-family]:enabled:active{
+ scale:.93;box-shadow:inset 0 2px 6px #13243588;
+}
+.dock-shout #boostRoar[data-family]:enabled strong{color:#18212a}
+@media(prefers-reduced-motion:no-preference){
+ .action-rail button[data-family]:not([hidden]):enabled,
+ .action-rail #counterBlock[data-family]:not([hidden]):enabled{
+  animation:pitch-pop .24s ease-out both;
+ }
+ .action-rail button[data-family]:enabled::before,.dock-shout button[data-family]:enabled::before,
+ .dock-bonus[data-family]:not([hidden])::before{
+  animation:action-halo 1.65s ease-in-out infinite;
+ }
+ .action-rail #counterBlock[data-family]:enabled::before{animation-duration:1.15s}
+ @keyframes action-halo{
+  0%,100%{scale:.98;opacity:.68}
+  50%{scale:1.14;opacity:.32}
+ }
+}
 </style><meta name="description" content="Play the Kirkwall Ba’ on mapped streets in this mobile arcade tester."></head>
 <body><main class="shell">
 <header class="top"><div class="brand">BA' BATTLE <small>KIRKWALL · ORKNEY</small></div><div class="top-actions"><div class="zoom-stepper" role="group" aria-label="Map zoom">
@@ -2671,7 +2715,9 @@ function showPerfectBonus(){
  if(id){
   dockBonusTarget=id;
   dockBonusUntil=elapsed+4.2;
-  const action=$(id),label=action.querySelector('.rail-label').textContent;
+  const action=$(id);
+  button.dataset.family=action.dataset.family;
+  const label=action.querySelector('.rail-label').textContent;
   const icon=action.querySelector('.rail-symbol').cloneNode(true);
   const words=document.createElement('strong');
   words.textContent=label;
@@ -2700,11 +2746,11 @@ $('perfectBonus').onclick=()=>{
 
 function installDriveSpectrum(){
  const {early,late}=perfectBand(),risk=perfectRiskBand();
- const stops=[[0,'#79675d'],[okPush.early,'#a38150'],[goodPush.early,'#83ae78']];
- if(risk.early<early)stops.push([risk.early,'#be6651']);
- stops.push([early,'#ffe092']);
- if(risk.late>late)stops.push([late,'#be6651']);
- stops.push([risk.late,'#83ae78'],[goodPush.late,'#a38150'],[okPush.late,'#79675d'],[driveScale,'#79675d']);
+ const stops=[[0,'#79675d'],[okPush.early,'#a38150'],[goodPush.early,'#55dca2']];
+ if(risk.early<early)stops.push([risk.early,'#ec796c']);
+ stops.push([early,'#fff38a']);
+ if(risk.late>late)stops.push([late,'#ec796c']);
+ stops.push([risk.late,'#55dca2'],[goodPush.late,'#a38150'],[okPush.late,'#79675d'],[driveScale,'#79675d']);
  const colors=stops.slice(0,-1).map(([seconds,color],i)=>`${color} ${seconds/driveScale*100}% ${stops[i+1][0]/driveScale*100}%`);
  $('driveMeter').style.setProperty('--drive-spectrum',`linear-gradient(90deg,${colors.join(',')})`);
 }
@@ -2721,6 +2767,8 @@ function installControls(){
  for(const id of railActions.slice(5))if(id!=='boostRoar')right.append($(id));
  $('dockShout').append($('boostRoar'));
  const labels={rally:'Rally',smuggle:'Smuggle Ba’',flankLeft:'Flank Left',flankRight:'Flank Right',wind:'Second Wind'};
+ const families={counterBlock:'pressure',rally:'pressure',smuggle:'route',flankLeft:'route',
+  flankRight:'route',wind:'recovery',boostRoar:'pressure',boostDeep:'boost',boostExtra:'boost'};
  const icons={
   counterBlock:'M12 22s7-3 7-10V5l-7-3-7 3v7c0 7 7 10 7 10Zm-3-10 2 2 4-4',
   rally:'M5 21V4m0 1c5-5 9 4 14 0v10c-5 4-9-5-14 0',
@@ -2734,6 +2782,7 @@ function installControls(){
  };
  for(const id of railActions){
   const button=$(id),text=button.firstChild;
+  button.dataset.family=families[id];
   const label=document.createElement('span');
   label.className='rail-label';
   label.textContent=labels[id]??text.textContent.trim();
