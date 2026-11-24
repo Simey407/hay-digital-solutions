@@ -684,6 +684,22 @@ html,body{background:#0e222a}
  .power-tray button.perfect-spotlight::after{animation-duration:.85s}
  @keyframes tray-throb{0%,100%{opacity:.56}50%{opacity:1;box-shadow:inset 0 0 10px #fff7}}
 }
+
+#pitchTools #boostRoar{
+ flex:1 0 100%;max-width:none;min-height:52px;
+ grid-template-columns:28px 1fr auto;grid-template-rows:auto auto;
+ align-items:center;justify-items:start;column-gap:8px;
+ padding:5px 10px;text-align:left;
+}
+#boostRoar[data-call-team=up]{--ready:#ffe66e;--ready-low:#ffae3d}
+#boostRoar[data-call-team=down]{--ready:#a0f8ff;--ready-low:#53cce9}
+#pitchTools #boostRoar .rail-symbol{grid-column:1;grid-row:1/span 2;width:25px;height:25px}
+#pitchTools #boostRoar .rail-label{grid-column:2;font-size:clamp(13px,4vw,17px);line-height:1}
+#pitchTools #boostRoar small{display:block;grid-column:2;margin:0;font:850 9px/1 system-ui;letter-spacing:.07em;text-transform:uppercase}
+#pitchTools #boostRoar strong{position:static;grid-column:3;grid-row:1/span 2;justify-self:end;padding:4px 6px;border-radius:6px;background:#102237;color:#fff;font-size:11px}
+@media(prefers-reduced-motion:no-preference){
+ #pitchTools #boostRoar:enabled::after{animation-duration:1.05s}
+}
 </style><meta name="description" content="Play the Kirkwall Ba’ on mapped streets in this mobile arcade tester."></head>
 <body><main class="shell">
 <header class="top"><div class="brand">BA' BATTLE <small>KIRKWALL · ORKNEY</small></div><div class="top-actions"><div class="zoom-stepper" role="group" aria-label="Map zoom">
@@ -893,12 +909,14 @@ function updateCrowdCall(){
   callCrowd(lastAmbientTeam);
  }
 }
+function shoutTeam(){
+ return crowdCall?.kind==='ambient'&&crowdCall.until>elapsed?crowdCall.team:side;
+}
 function useBoost(k){
  if(gameState!=='playing'||shopOpen||!economy.boosts[k])return false;
  if(k==='roar'){
   if(roarUntil>elapsed)return false;
-  const audible=crowdCall&&crowdCall.until>elapsed&&crowdCall.kind==='ambient';
-  const called=audible?crowdCall.team:side;
+  const called=shoutTeam();
   const wrong=called!==side;
   lastShout={team:called,wrong};
   if(wrong){rivalShoutUntil=elapsed+2.35;contactPulse=.9;}
@@ -2741,6 +2759,20 @@ function showPerfectBonus(){
 function updateDockEvents(){
  if(dockBonusTarget&&(elapsed>=dockBonusUntil||$(dockBonusTarget).disabled||gameState!=='playing'))dockBonusTarget=null;
  for(const id of bonusPriority)$(id).classList.toggle('perfect-spotlight',id===dockBonusTarget);
+ const shout=$('boostRoar');
+ if(!shout.disabled){
+  const team=shoutTeam(),name=team==='up'?'Uppies':'Doonies';
+  const label=shout.querySelector('.rail-label');
+  const text='SHOUT FOR '+name.toUpperCase();
+  if(label.textContent!==text){
+   label.textContent=text;
+   shout.dataset.callTeam=team;
+   shakeCue(shout.querySelector('.rail-symbol'));
+  }
+  const hint=shout.querySelector('small');
+  const detail=team===side?'Ready · Tap to rally':'Rival chant · Tap to back them';
+  if(hint.textContent!==detail)hint.textContent=detail;
+ }
  const rallyText=$('rallyChargeText');
  const label=elapsed<perfectNoticeUntil?'Perfect · rally up':'Rally '+Math.floor(rallyCharge)+'%';
  if(rallyText.textContent!==label)rallyText.textContent=label;
