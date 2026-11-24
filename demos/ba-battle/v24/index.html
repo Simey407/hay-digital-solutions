@@ -294,6 +294,7 @@ button:disabled{cursor:not-allowed}
 .top #zoom{text-transform:uppercase}
 
 #modal .footnote{display:block;text-align:center}
+@media(max-height:710px){#modal .footnote{margin-top:4px;font-size:10px}}
 #push.driving{background:linear-gradient(#ffdfa1,#ecaa56);box-shadow:inset 0 0 0 3px #fff3c0}
 #mapScale{min-width:24px}
 </style><meta name="description" content="Play the Kirkwall Ba’ on mapped streets in this mobile arcade tester."></head>
@@ -1360,7 +1361,7 @@ function endMatch(win){
  $('modal').innerHTML=`<div class="eyebrow">${isWall?'THE WALL IS TOUCHED!':'THE BA’ IS IN THE WATER!'}</div><h1>${win?'YOUR SIDE WINS':'THE OTHER SIDE WINS'}</h1><p>${resultSide==='up'?'UPPIES':'DOONIES'} GOALED! The Ba’ reached ${goalName}. </p><div class="resultscore">${score.toLocaleString()} POINTS</div><div class="best">+${coinsEarned} BA’ Coins · ${economy.coins} coins held · Local rank ${localRank()||'—'} (this device only) · chaos ${chaosEscapes}/${chaosEvents} escaped · Boosts used ${Object.values(boostsUsed).reduce((a,b)=>a+b,0)}. <br>Match duration ${record} · ${totalTaps} pushes · best combo x${peakCombo} · ${intercepted} smuggles intercepted · ${blocks} rival runs blocked · ${runFailures} missed · ${turnsTaken} turns · ${aiFeints} feints · ${aiBlocksBroken} junctions broken · throw accuracy ${throwOutcome?Math.round(throwOutcome.accuracy*100):0}%</div><button class="primary" id="again">PLAY AGAIN</button><button class="secondary" id="menuBack" style="margin-top:10px;width:100%">CHANGE TEAM</button><button class="secondary" id="leaderAfter" style="margin-top:7px;width:100%">VIEW LOCAL LEADERBOARD</button>`;
  $('overlay').classList.remove('hidden');$('again').onclick=beginThrow;$('menuBack').onclick=showMenu;$('leaderAfter').onclick=()=>openShop('leaderboard');updateHUD();$('instructions').textContent='The Ba’ has been goaled. Choose Play Again or Change Team.';
 }
-function showMenu(){goalFinish=null;if(hasRealGraph)rebuildAfterTurn(baselineRoute,0,0);$('overlay').classList.remove('throw-screen');$('overlay').style.alignItems='center';throwFlight=null;throwOutcome=null;chaos=null;$('chaosLayer').classList.add('hidden');gameState='menu';driveHeld=false;rivalOrder=null;ballM=0;momentum=0;liveForceOwn=2.7;liveForceEnemy=2.7;holding=false;chosen.clear();selecting=false;activeCarrier=null;flanked=[];for(const a of scrumBodies)a.fill(null);$('modal').innerHTML=`<div class="eyebrow">ORKNEY · KIRKWALL · THE STREET GAME</div><svg class="ba-title-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Black and brown stitched leather Ba"><circle cx="50" cy="50" r="43" fill="#8f5636" stroke="#deb58b" stroke-width="2"/><path d="M50 7 A43 43 0 0 1 78 18 L50 50 Z M93 50 A43 43 0 0 1 78 82 L50 50 Z M50 93 A43 43 0 0 1 22 82 L50 50 Z M7 50 A43 43 0 0 1 22 18 L50 50 Z" fill="#202326" stroke="#c9a383" stroke-width="1.4"/><path d="M17 28 Q50 5 83 28 M17 72 Q50 95 83 72" fill="none" stroke="#dbb38d" stroke-dasharray="2 3"/><circle cx="50" cy="50" r="3" fill="#241917"/></svg><h1>THE BA'<br><span style="color:var(--gold)">BATTLE</span></h1><p>Pick your side. Get the Ba’ to your goal.</p><div class="teamrow"><button class="team ${side==='up'?'selected':''}" id="teamUp">UPPIES<small>To Mackinson's Corner</small></button><button class="team ${side==='down'?'selected':''}" id="teamDown">DOONIES<small>To Kirkwall Harbour</small></button></div><div class="difficultyrow" role="group" aria-label="Difficulty">${Object.entries(LEVELS).map(([k,v])=>`<button class="difficulty ${difficulty===k?'active':''}" id="level-${k}">${v.label}<small>${k==='training'?'Learn the ropes':k==='standard'?'A fair contest':k==='hard'?'Strong opposition':'Relentless AI'}</small></button>`).join('')}</div><label class="v17-profile" for="playerName">PLAYER NAME<input id="playerName" maxlength="18" autocomplete="nickname" value="${escapeText(economy.name)}" placeholder="Your name"></label><button class="primary" id="start">START THE BA’</button><div class="v17-menu"><button class="secondary" id="menuShop">BOOSTS</button><button class="secondary" id="menuBoard">LEADERBOARD</button></div><p class="footnote">Hold Push for a short drive, then release to recover. Brace against a surge and push when you see DRIVE NOW.</p>`;$('overlay').classList.remove('hidden');bindMenu();updateHUD()}
+function showMenu(){goalFinish=null;if(hasRealGraph)rebuildAfterTurn(baselineRoute,0,0);$('overlay').classList.remove('throw-screen');$('overlay').style.alignItems='center';throwFlight=null;throwOutcome=null;chaos=null;$('chaosLayer').classList.add('hidden');gameState='menu';driveHeld=false;rivalOrder=null;ballM=0;momentum=0;liveForceOwn=2.7;liveForceEnemy=2.7;holding=false;chosen.clear();selecting=false;activeCarrier=null;flanked=[];for(const a of scrumBodies)a.fill(null);$('modal').innerHTML=`<div class="eyebrow">ORKNEY · KIRKWALL · THE STREET GAME</div><svg class="ba-title-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Black and brown stitched leather Ba"><circle cx="50" cy="50" r="43" fill="#8f5636" stroke="#deb58b" stroke-width="2"/><path d="M50 7 A43 43 0 0 1 78 18 L50 50 Z M93 50 A43 43 0 0 1 78 82 L50 50 Z M50 93 A43 43 0 0 1 22 82 L50 50 Z M7 50 A43 43 0 0 1 22 18 L50 50 Z" fill="#202326" stroke="#c9a383" stroke-width="1.4"/><path d="M17 28 Q50 5 83 28 M17 72 Q50 95 83 72" fill="none" stroke="#dbb38d" stroke-dasharray="2 3"/><circle cx="50" cy="50" r="3" fill="#241917"/></svg><h1>THE BA'<br><span style="color:var(--gold)">BATTLE</span></h1><p>Pick your side. Get the Ba’ to your goal.</p><div class="teamrow"><button class="team ${side==='up'?'selected':''}" id="teamUp">UPPIES<small>To Mackinson's Corner</small></button><button class="team ${side==='down'?'selected':''}" id="teamDown">DOONIES<small>To Kirkwall Harbour</small></button></div><div class="difficultyrow" role="group" aria-label="Difficulty">${Object.entries(LEVELS).map(([k,v])=>`<button class="difficulty ${difficulty===k?'active':''}" id="level-${k}">${v.label}<small>${k==='training'?'Learn the ropes':k==='standard'?'A fair contest':k==='hard'?'Strong opposition':'Relentless AI'}</small></button>`).join('')}</div><label class="v17-profile" for="playerName">PLAYER NAME<input id="playerName" maxlength="18" autocomplete="nickname" value="${escapeText(economy.name)}" placeholder="Your name"></label><button class="primary" id="start">START THE BA’</button><div class="v17-menu"><button class="secondary" id="menuShop">BOOSTS</button><button class="secondary" id="menuBoard">LEADERBOARD</button></div><p class="footnote">Hold Push to drive. Release to recover. Brace a surge, then drive on cue.</p>`;$('overlay').classList.remove('hidden');bindMenu();updateHUD()}
 function bindMenu(){for(const [id,s] of [['teamUp','up'],['teamDown','down']])$(id).onclick=()=>{side=s;$('teamUp').classList.toggle('selected',s==='up');$('teamDown').classList.toggle('selected',s==='down');updateHUD()};$('start').onclick=beginThrow;$('menuShop').onclick=()=>{recordName();openShop('boosts')};$('menuBoard').onclick=()=>{recordName();openShop('leaderboard')};for(const k of Object.keys(LEVELS))$('level-'+k)?.addEventListener('click',()=>selectDifficulty(k))}
 function recalcFlanks(now){if(!graph||gameState!=='playing')return;if(now-roundSeed>5){roundSeed=now;flankRoutes()}}
 function releaseBrace(){
@@ -1373,8 +1374,8 @@ function releaseBrace(){
  braceCharge=0;
 }
 function driveForce(driving){
- if(!driving||driveSeconds<.18)return 0;
- const coordination=clamp((driveSeconds-.18)/.52,0,1);
+ if(!driving||driveSeconds<.12)return 0;
+ const coordination=clamp((driveSeconds-.12)/.36,0,1);
  return 5.4*coordination*clamp(energy/27,0,1);
 }
 function moveScrum(dt,difference,sign){
@@ -1414,7 +1415,7 @@ function update(dt,now){
  elapsed+=dt;gameTime=elapsed;
  const driving=driveHeld&&!holding&&!activeCarrier;
  driveSeconds=clamp(driveSeconds+dt*(driving?1:-2.4),0,2.7);
- const driveCost=driveSeconds<.24?0:driveSeconds<1.8?9:18;
+ const driveCost=driveSeconds<.20?0:driveSeconds<1.85?6:18;
  const energyRate=holding?-7:driving?-driveCost:cfg.regen+(roarUntil>elapsed?5:0);
  energy=clamp(energy+dt*energyRate,0,100);
  if(holding&&energy<=2)releaseBrace();
@@ -1459,7 +1460,7 @@ function update(dt,now){
     notify('BA’ REJOINS FROM '+carrier.laneName.toUpperCase()+'! +200');beep(800,.26);
   }
  }else{
-  const own=2.7+Math.min(12,tapPower)*cfg.tapScale+(rallyUntil>elapsed?1.95:0)+(roarUntil>elapsed?1.85:0)+driveForce(driving)+(counterUntil>elapsed&&!holding&&(driving||tapPower>1)?1.8:0)-nFlank*.27-(turningUntil>elapsed?.55:0);
+  const own=2.7+Math.min(12,tapPower)*cfg.tapScale+(rallyUntil>elapsed?1.95:0)+(roarUntil>elapsed?1.85:0)+driveForce(driving)+(counterUntil>elapsed&&!holding&&(driving||tapPower>1)?2.2:0)-nFlank*.27-(turningUntil>elapsed?.55:0);
   const junctionPressure=defendedJunction()?1.1:0;
   const defendersAway=aiBlock&&!activeBlockade()&&aiBlock.until>elapsed?-.65:0;
   const chaseCost=Math.min(0.45,flanked.filter(f=>f.pursuit).length*.17);
