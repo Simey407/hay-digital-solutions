@@ -466,7 +466,7 @@ function buyBooster(k){const cost=BOOST_PRICES[k];if(!cost||economy.coins<cost)r
  economy.coins-=cost;economy.boosts[k]++;saveEconomy();renderShop('boosts');updateHUD();return true}
 function cheerSound(){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext,ac=window.__baAudio||(window.__baAudio=new C());if(ac.state==='suspended')ac.resume();const length=Math.floor(ac.sampleRate*1.0),buffer=ac.createBuffer(1,length,ac.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<length;i++){const phase=i/length;data[i]=(Math.random()*2-1)*Math.sin(Math.PI*phase)*.6;}const source=ac.createBufferSource(),filter=ac.createBiquadFilter(),gain=ac.createGain();source.buffer=buffer;filter.type='bandpass';filter.frequency.value=500;filter.Q.value=.45;gain.gain.value=.15;source.connect(filter).connect(gain).connect(ac.destination);source.start()}catch{}}
 const teamName=team=>team==='up'?'Uppies':'Doonies';
-let crowdCall=null,nextCrowdCall=1.4,rivalShoutUntil=0,lastShout=null;
+let crowdCall=null,nextCrowdCall=1.4,lastAmbientTeam=null,rivalShoutUntil=0,lastShout=null;
 function soundChant(team,featured=false){
  if(!soundOn)return;
  if(featured)cheerSound();
@@ -497,7 +497,8 @@ function updateCrowdCall(){
  if(!active&&elapsed>=nextCrowdCall){
   const team=enemySurgeUntil>elapsed||momentum*ownerSign()< -2? (side==='up'?'down':'up')
    : Math.abs(momentum)>2?(momentum<0?'up':'down'):(Math.floor(elapsed/4)%2?'down':'up');
-  callCrowd(team);
+  lastAmbientTeam=team===lastAmbientTeam?(team==='up'?'down':'up'):team;
+  callCrowd(lastAmbientTeam);
  }
 }
 function useBoost(k){
@@ -1766,7 +1767,7 @@ function changeZoom(step){
 }
 function resetPresentation(){
  spectators=[];
- crowdCall=null;nextCrowdCall=1.4;rivalShoutUntil=0;lastShout=null;
+ crowdCall=null;nextCrowdCall=1.4;lastAmbientTeam=null;rivalShoutUntil=0;lastShout=null;
  $('crowdCall').hidden=true;
  goalApproach=null;
  zoomIndex=manualZoomIndex;
