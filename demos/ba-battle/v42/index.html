@@ -2086,7 +2086,8 @@ function updateHUD(){
  const intel=$('aiIntel');intel.textContent=gameState==='playing'?(rivalOrder?`RIVAL ORDER: ${rivalOrder.which.toUpperCase()} INTO ${turnLabel(rivalOrder).toUpperCase()} — SEAL LANE`:aiStatus()):'Rival scouts are watching the streets.';
  intel.classList.toggle('threat',gameState==='playing'&&(!!rivalOrder||!!activeBlockade()||flanked.some(f=>f.pursuit)));
  intel.classList.toggle('feint',gameState==='playing'&&!!aiBlock&&!queuedTurn);
- $('pressureLabel').textContent='STAMINA '+Math.ceil(energy)+'%';
+ const climbing=gameState==='playing'&&!activeCarrier&&uphillEffort(ballM,sign)>.25;
+ $('pressureLabel').textContent='STAMINA '+Math.ceil(energy)+'%'+(climbing?' · UPHILL':'');
  const timing=driveHeld?pushGrade(driveSeconds):null;
  const driveReady=timing===perfectPush&&energy>=8;
  const showGrade=!driveHeld&&lastPushGrade&&pushGradeUntil>elapsed;
@@ -2466,6 +2467,11 @@ function driveForce(driving){
  const coordination=clamp((driveSeconds-.12)/.36,0,1);
  return (difficulty==='training'?6.2:5.65)*coordination*clamp(energy/25,0,1);
 }
+// Approximate the local climb from the direction of the mapped street.
+function uphillEffort(metres,direction){
+ const east=tangentAt(metres).fx*direction;
+ return clamp((east-.23)/.77,0,1);
+}
 function moveScrum(dt,difference,sign){
  const velocity=momentum*sign;
  const braced=holding&&energy>2;
@@ -2473,13 +2479,16 @@ function moveScrum(dt,difference,sign){
  // Starting a packed scrum moving takes more force than keeping it moving.
  const grip=(Math.abs(velocity)<.6?.76:.40)+narrow*.36;
  const residual=Math.sign(difference)*Math.max(0,Math.abs(difference)-grip);
- const force=braced?Math.min(0,residual)*.24:residual;
+ const resistingClimb=uphillEffort(ballM,(Math.sign(residual)||1)*sign);
+ const force=braced?Math.min(0,residual)*.24:residual*(1-resistingClimb*.37);
  const cap=difficulty==='training'||difficulty==='standard'?10.5:13;
  const forwardCap=cap+Math.min(1.2,Math.max(0,perfectStreak-1)*.3);
  const give=clamp(Math.abs(difference)*.17,0,.74);
  const pressure=clamp(.68+(.25*narrow)-give,0,1);
  packCompression=lerp(packCompression,pressure,1-Math.exp(-dt*5));
- const next=clamp(velocity+dt*(force*6-velocity*(braced?9:2.2)),-cap,forwardCap);
+ const reverseCap=cap*(1-uphillEffort(ballM,-sign)*.24);
+ const uphillForwardCap=forwardCap*(1-uphillEffort(ballM,sign)*.24);
+ const next=clamp(velocity+dt*(force*6-velocity*(braced?9:2.2)),-reverseCap,uphillForwardCap);
  momentum=next*sign;
  scrumPhase=Math.abs(next)<.55?'locked':Math.abs(next)>6.5?'surging':'moving';
 }
@@ -2501,7 +2510,7 @@ function update(dt,now){
  const driving=driveHeld&&!holding&&!activeCarrier;
  if(driving)driveSeconds=Math.min(4,driveSeconds+dt);
  const driveCost=driveSeconds<.20?0:driveSeconds<=goodPush.late?5.5:21;
- const energyRate=holding?-7:driving?-driveCost:cfg.regen+(roarUntil>elapsed?5:0);
+ const energyRate=holding?-7:driving?-(driveCost+(driveCost>0?uphillEffort(ballM,ownerSign())*4:0)):cfg.regen+(roarUntil>elapsed?5:0);
  energy=clamp(energy+dt*energyRate,0,100);
  if(holding&&energy<=2)releaseBrace();
  tapPower*=Math.exp(-dt*cfg.decay);
@@ -2895,6 +2904,7 @@ if(new URLSearchParams(location.search).has('qa'))window.__baQA={
  forceThreat(){nextRivalOrderAt=elapsed;planRivalOrder();return window.__baDebug()},
  forceGround(m){ballM=clamp(m,-totalUp,totalDown);return window.__baDebug()},
  trySeal(){blockRun();return window.__baDebug()},
+ hillAt(metres,direction){return uphillEffort(metres,direction);},
  routeChoices(direction){return makeTurnChoices(true,direction);},
  getChoices(direction){return makeTurnChoices(true,direction).left||makeTurnChoices(true,direction).right;},
  stageGoal(team){if(gameState!=='playing')return;ballM=team==='up'?-totalUp:totalDown;beginGoal(team);updateHUD();},
