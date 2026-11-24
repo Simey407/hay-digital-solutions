@@ -712,7 +712,7 @@ html,body{background:#0e222a}
  <progress id="replayProgress" value="0" max="1" aria-label="Replay progress"></progress>
 </section><div class="match-cues"><div id="finalStretch" class="final-stretch" hidden>FINAL STRETCH</div><div class="battle-alert" id="battleAlert" aria-live="polite"></div><div class="toast" id="toast" aria-live="polite"></div></div><div class="map-key" aria-hidden="true"><b>↑ N</b><span id="mapScale"></span></div><div class="junction-choice" id="junctionChoice" role="group" aria-label="Choose direction at next junction" hidden><div class="junction-title" id="junctionTitle">JUNCTION AHEAD</div><div class="junction-buttons"><button id="quickLeft" type="button">↶ LEFT</button><button id="quickStraight" type="button">↑ STRAIGHT</button><button id="quickRight" type="button">RIGHT ↷</button></div></div><div class="hints"><span class="source">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a><br><a id="mapData" download="kirkwall-odbl.json">Map data</a> <span id="geoStatus"></span></span><span class="minilabel" id="hint">PUSH to advance · HOLD to brace</span></div><div class="overlay" id="overlay"><div class="modal" id="modal"></div></div></section>
 <section class="bottom"><div class="dock-events"><div class="dock-news"><span id="rallyChargeText">Rally 0%</span><div class="crowd-call" id="crowdCall" aria-live="polite" hidden></div></div>
- </div><div id="pitchTools" class="power-tray" role="group" aria-label="Ready power-ups and tactics" hidden></div><div class="pressure"><span id="pressureLabel">SCRUM PRESSURE</span><span id="pressureValue">Ready</span></div><div class="meter drive-meter" id="driveMeter" aria-hidden="true"><div id="pushMeter"></div></div><div class="meter blue"><div id="staminaMeter" style="width:100%"></div></div><div class="primary-actions"><button class="action" id="push" aria-label="Push. Press and hold for a short drive." disabled>PUSH</button><button class="hold-action" id="holdLine" disabled aria-label="Press and hold to resist opposing push">HOLD<small>BRACE</small></button></div><div class="wallet-strip"><span id="walletText">BA’ COINS: 45 · LOCAL DEMO</span><button id="openShop" type="button">BOOSTS</button></div><div class="boostbar" role="group" aria-label="Inventory boosters"><button id="boostRoar" disabled>Ba’ Shouts <strong id="roarQty">×1</strong><small>Stamina + surge</small></button><button id="boostDeep" disabled>Dig Deep <strong id="deepQty">×1</strong><small>Refill + pressure</small></button><button id="boostExtra" disabled>Extra Smuggle <strong id="extraQty">×1</strong><small>Another attempt</small></button></div><div class="counterbar" id="counterBar"><span id="counterText">OPPOSITION BREAKAWAY!</span><button id="counterBlock" disabled>BLOCK RUN</button></div><details class="tacticDetails" id="tacticDetails"><summary>STREET TACTICS · RALLY · SMUGGLE · FLANKS</summary><div class="controls"><button class="ability" id="rally" disabled>RALLY<small id="rallySub">Charge to unlock</small></button><button class="ability" id="smuggle" disabled>SMUGGLE BA'<small id="smuggleSub">Send a flank first</small></button><button class="ability" id="wind" disabled>SECOND WIND<small id="windSub">Refill stamina</small></button></div><div class="route-header"><span>DIRECT THE SCRUM · CONNECTED LANES</span><span id="nextTurn">Scanning the next junction…</span></div><div class="ai-intel" id="aiIntel" role="status" aria-live="polite">Rival scouts are watching the streets.</div><div class="steerrow" role="group" aria-label="Choose a direction for the scrum"><button class="steer" id="steerLeft" disabled>↶ LEFT <small id="steerLeftName">Finding lanes…</small></button><button class="steer active" id="steerStraight" disabled>↑ STRAIGHT <small>Stay on this street</small></button><button class="steer" id="steerRight" disabled>RIGHT ↷ <small id="steerRightName">Finding lanes…</small></button></div><div class="squadrow"><button class="mini" id="select" disabled>SELECT SQUAD</button><button class="mini" id="flankLeft" disabled>◀ LEFT LANE</button><button class="mini" id="flankRight" disabled>RIGHT LANE ▶</button></div></details><p class="statehint" id="instructions">Tap PUSH to advance; hold HOLD to brace. Choose a street when a junction appears.</p></section>
+ </div><div id="pitchTools" class="power-tray" role="group" aria-label="Ready power-ups and tactics" hidden></div><div class="pressure"><span id="pressureLabel">SCRUM PRESSURE</span><span id="pressureValue">Ready</span></div><div class="meter drive-meter" id="driveMeter" aria-hidden="true"><div id="pushMeter"></div></div><div class="meter blue"><div id="staminaMeter" style="width:100%"></div></div><div class="primary-actions"><button class="action" id="push" aria-label="Push. Press and hold for a short drive." disabled>PUSH</button><button class="hold-action" id="holdLine" disabled aria-label="Press and hold to resist opposing push">HOLD<small>BRACE</small></button></div><div class="wallet-strip"><span id="walletText">BA’ COINS: 45 · LOCAL DEMO</span><button id="openShop" type="button">BOOSTS</button></div><div class="boostbar" role="group" aria-label="Inventory boosters"><button id="boostRoar" disabled>Ba’ Shouts <strong id="roarQty">×1</strong><small>Stamina + surge</small></button><button id="boostDeep" disabled>Dig Deep <strong id="deepQty">×1</strong><small>Refill + pressure</small></button><button id="boostExtra" disabled>Extra Smuggle <strong id="extraQty">×1</strong><small>Another attempt</small></button></div><div class="counterbar" id="counterBar"><span id="counterText">OPPOSITION BREAKAWAY!</span><button id="counterBlock" disabled>BLOCK RUN</button></div><details class="tacticDetails" id="tacticDetails"><summary>STREET TACTICS · RALLY · SMUGGLE · FLANKS</summary><div class="controls"><button class="ability" id="rally" disabled>RALLY<small id="rallySub">Charge to unlock</small></button><button class="ability" id="smuggle" disabled>SMUGGLE BA'<small id="smuggleSub">Send a flank first</small></button><button class="ability" id="fakeSmuggle" type="button" disabled>Fake Smuggle</button><button class="ability" id="wind" disabled>SECOND WIND<small id="windSub">Refill stamina</small></button></div><div class="route-header"><span>DIRECT THE SCRUM · CONNECTED LANES</span><span id="nextTurn">Scanning the next junction…</span></div><div class="ai-intel" id="aiIntel" role="status" aria-live="polite">Rival scouts are watching the streets.</div><div class="steerrow" role="group" aria-label="Choose a direction for the scrum"><button class="steer" id="steerLeft" disabled>↶ LEFT <small id="steerLeftName">Finding lanes…</small></button><button class="steer active" id="steerStraight" disabled>↑ STRAIGHT <small>Stay on this street</small></button><button class="steer" id="steerRight" disabled>RIGHT ↷ <small id="steerRightName">Finding lanes…</small></button></div><div class="squadrow"><button class="mini" id="select" disabled>SELECT SQUAD</button><button class="mini" id="flankLeft" disabled>◀ LEFT LANE</button><button class="mini" id="flankRight" disabled>RIGHT LANE ▶</button></div></details><p class="statehint" id="instructions">Tap PUSH to advance; hold HOLD to brace. Choose a street when a junction appears.</p></section>
 <dialog class="pause-dialog" id="pauseDialog" aria-labelledby="pauseTitle">
  <h2 id="pauseTitle">Match paused</h2>
  <p id="pauseStatus">The Ba’ will wait.</p>
@@ -1300,6 +1300,10 @@ function executeRivalOrder(){
    flankRoutes();notify('RIVALS DRIVE THE BA’ DOWN '+turnLabel(o).toUpperCase());beep(220,.2);
  }catch(error){console.warn('Rival turn cancelled',error);rivalOrder=null;rivalOrdersMissed++;nextRivalOrderAt=elapsed+28;}
 }
+function runnerTarget(squad,carrier){
+ // Both routes share the side lane and rejoin node, but can start at different points.
+ return clamp(1-(1-carrier.t)*carrier.length/squad.length,0,1);
+}
 function rivalAI(dt){
  if(queuedTurn&&!aiBlock&&aiReactionAt&&elapsed>=aiReactionAt){
   const c=queuedTurn;
@@ -1321,13 +1325,16 @@ function rivalAI(dt){
  }
  for(const f of flanked){
   if(!f.pursuit&&elapsed>=f.pursuitAt){
-   f.pursuit={progress:Math.max(0,f.travel-.14),strength:difficulty==='training'?2:difficulty==='standard'?3:difficulty==='hard'?4:5};
+   f.pursuit={progress:f.decoy?0:Math.max(0,f.travel-.14),strength:difficulty==='training'?2:difficulty==='standard'?3:difficulty==='hard'?4:5};
    aiPursuits++;
-   notify('OPPOSITION CHASES '+f.laneName.toUpperCase());beep(300,.1);
+   if(f.smuggling&&activeCarrier)activeCarrier.pursuit=f.pursuit;
+   notify(f.decoy?'RIVALS TOOK THE BAIT · PUSH NOW':'OPPOSITION CHASES '+f.laneName.toUpperCase());beep(300,.1);
   }
   if(f.pursuit){
-   const speed=f.smuggling?.165:.155;
-   f.pursuit.progress=clamp(f.pursuit.progress+dt*speed,0,1);
+   const carrier=f.smuggling?activeCarrier:null;
+   const target=carrier?runnerTarget(f,carrier):f.travel;
+   const step=dt*(carrier?18:15)/f.length;
+   f.pursuit.progress=clamp(f.pursuit.progress+clamp(target-f.pursuit.progress,-step,step),0,1);
   }
  }
 }
@@ -2085,7 +2092,9 @@ function updateHUD(){
  if(pressure.dataset.grade!==activeGrade)pressure.dataset.grade=activeGrade;
  if(pressure.textContent!==phaseText)pressure.textContent=phaseText;
  const alert=$('battleAlert');const incoming=gameState==='playing'&&enemySurgeAt-elapsed<2.5&&enemySurgeAt>elapsed;const underAttack=gameState==='playing'&&enemySurgeUntil>elapsed;alert.classList.toggle('show',incoming||underAttack||enemyRunActive);alert.textContent=enemyRunActive?'RIVAL BREAKAWAY · BRACE OR BLOCK RUN':underAttack?'OPPOSITION SURGE! HOLD TO BRACE':incoming?'OPPOSITION BUILDING UP…':'';
- $('push').classList.toggle('driving',driveHeld&&!holding&&energy>2);$('push').textContent=driveReady?'RELEASE':'PUSH';$('rally').disabled=!(gameState==='playing'&&rallyCharge>=55&&rallyUntil<=elapsed);$('rallySub').textContent=rallyUntil>elapsed?'Pushing!':rallyCharge>=55?'Rally the scrum':'Charge 55%';$('wind').disabled=!(gameState==='playing'&&!windUsed&&energy<55);$('windSub').textContent=windUsed?'Used':energy<55?'Ready':'Low stamina';$('smuggle').disabled=!(gameState==='playing'&&!smuggleUsed&&!activeCarrier&&flanked.some(f=>f.travel>=.24&&!f.smuggling&&laneWaypoints(f,ballM))); $('smuggleSub').textContent=smuggleUsed?'Used':activeCarrier?'In progress':flanked.length?('Flank '+Math.round(Math.max(...flanked.map(f=>f.travel))*100)+'%'):'Send a flank';for(const id of ['rally','smuggle','wind'])$(id).classList.toggle('ready',!$(id).disabled);$('select').disabled=gameState!=='playing';$('select').classList.toggle('selected',selecting);$('select').textContent=selecting?'DRAG / QUICK PICK':chosen.size?`${chosen.size} SELECTED`:'SELECT SQUAD';$('flankLeft').disabled=gameState!=='playing'||!!activeCarrier||!canSendFlank('left');$('flankRight').disabled=gameState!=='playing'||!!activeCarrier||!canSendFlank('right');$('push').disabled=gameState!=='playing';$('hint').textContent=activeCarrier?'Ba’ following '+activeCarrier.laneName:selecting?'Drag over your players':'Tap Push · hold to brace';$('instructions').textContent=enemyRunActive?'Block the rival breakaway before the countdown ends.':rivalOrder?'Opposition preparing a lane turn! Tap SEAL LANE to block it, or fight hard to push them back.':selecting?'Drag a box around teammates; tap Select again to quick-pick four.':chosen.size?'Choose a connected lane. Smaller squads weaken the scrum less.':flanked.length?"Wait for your squad to advance, then smuggle the Ba'!":"Hold PUSH until gold, then release. HOLD to brace against a surge.";
+ $('push').classList.toggle('driving',driveHeld&&!holding&&energy>2);$('push').textContent=driveReady?'RELEASE':'PUSH';$('rally').disabled=!(gameState==='playing'&&rallyCharge>=55&&rallyUntil<=elapsed);$('rallySub').textContent=rallyUntil>elapsed?'Pushing!':rallyCharge>=55?'Rally the scrum':'Charge 55%';$('wind').disabled=!(gameState==='playing'&&!windUsed&&energy<55);$('windSub').textContent=windUsed?'Used':energy<55?'Ready':'Low stamina';$('smuggle').disabled=!(gameState==='playing'&&!smuggleUsed&&!activeCarrier&&flanked.some(f=>f.travel>=.24&&!f.smuggling&&!f.decoy&&laneWaypoints(f,ballM))); $('smuggleSub').textContent=smuggleUsed?'Used':activeCarrier?'In progress':flanked.length?('Flank '+Math.round(Math.max(...flanked.map(f=>f.travel))*100)+'%'):'Send a flank';for(const id of ['rally','smuggle','wind'])$(id).classList.toggle('ready',!$(id).disabled);$('select').disabled=gameState!=='playing';$('select').classList.toggle('selected',selecting);$('select').textContent=selecting?'DRAG / QUICK PICK':chosen.size?`${chosen.size} SELECTED`:'SELECT SQUAD';$('flankLeft').disabled=gameState!=='playing'||!!activeCarrier||!canSendFlank('left');$('flankRight').disabled=gameState!=='playing'||!!activeCarrier||!canSendFlank('right');$('push').disabled=gameState!=='playing';$('hint').textContent=activeCarrier?'Ba’ following '+activeCarrier.laneName:selecting?'Drag over your players':'Tap Push · hold to brace';$('instructions').textContent=enemyRunActive?'Block the rival breakaway before the countdown ends.':rivalOrder?'Opposition preparing a lane turn! Tap SEAL LANE to block it, or fight hard to push them back.':selecting?'Drag a box around teammates; tap Select again to quick-pick four.':chosen.size?'Choose a connected lane. Smaller squads weaken the scrum less.':flanked.length?"Wait for your squad to advance, then smuggle the Ba'!":"Hold PUSH until gold, then release. HOLD to brace against a surge.";
+ $('fakeSmuggle').disabled=!onPitch||!!activeCarrier||
+  !(flanked.some(f=>!f.decoy&&!f.smuggling&&!f.pursuit)||['left','right'].some(canSendFlank));
  const next=$('nextTurn'),choice=queuedTurn||steerChoices.left||steerChoices.right;
  next.textContent=queuedTurn?`ORDERED ${queuedTurn.which.toUpperCase()} · ${Math.max(0,Math.round(queuedTurn.dist-ownerSign()*ballM))}m`:choice?`${Math.max(0,Math.round(choice.dist-ownerSign()*ballM))}m TO JUNCTION`:elapsed<turnCooldownUntil?'TURN RECOVERING':'NO SIDE TURN NEARBY';
  for(const k of ['left','right']){
@@ -2172,7 +2181,7 @@ function canSendFlank(which){
  const choice=flankOptions[which];
  return !!choice&&!flanked.length&&Math.abs(choice.dist-ownerSign()*ballM)<=40;
 }
-function sendFlank(which){
+function sendFlank(which,decoy=false){
  const opt=flankOptions[which];
  if(!canSendFlank(which)||gameState!=='playing'||activeCarrier)return;
  const anchored=laneWaypoints(opt,ballM);
@@ -2180,13 +2189,25 @@ function sendFlank(which){
  const ids=availableFlank();
  if(!ids.length)return;
  flanked.push({ids,route:opt.path.slice(),waypoints:anchored.points,travel:0,which,laneName:anchored.laneName,smuggling:false,
-   pursuitAt:elapsed+AI_REACTION[difficulty]+1.1,pursuit:null});
- chosen.clear();selecting=false;notify(ids.length+' PLAYERS HEADING DOWN '+anchored.laneName.toUpperCase());beep(560,.08);
+   length:anchored.length,decoy,pursuitAt:elapsed+AI_REACTION[difficulty]+(decoy?.15:1.1),pursuit:null});
+ chosen.clear();selecting=false;notify(decoy?'FAKE SMUGGLE · DECOYS AWAY':ids.length+' PLAYERS HEADING DOWN '+anchored.laneName.toUpperCase());beep(560,.08);
  flankOptions={left:null,right:null};updateHUD();
+}
+function fakeSmuggle(){
+ if(gameState!=='playing'||activeCarrier||matchPaused)return;
+ const squad=flanked.find(f=>!f.decoy&&!f.smuggling&&!f.pursuit);
+ if(squad){
+  squad.decoy=true;
+  squad.pursuitAt=elapsed+AI_REACTION[difficulty]*.5;
+  notify('FAKE SMUGGLE · DECOYS AWAY');updateHUD();
+  return;
+ }
+ const lane=['left','right'].find(canSendFlank);
+ if(lane)sendFlank(lane,true);
 }
 function smuggle(){
  if(gameState!=='playing'||smuggleUsed||activeCarrier)return;
- const eligible=flanked.filter(f=>f.travel>=.24&&!f.smuggling).sort((a,b)=>b.travel-a.travel);
+ const eligible=flanked.filter(f=>f.travel>=.24&&!f.smuggling&&!f.decoy).sort((a,b)=>b.travel-a.travel);
  let picked=null,trip=null;
  for(const f of eligible){const candidate=laneWaypoints(f,ballM);if(candidate){picked=f;trip=candidate;break;}}
  if(!picked){notify(eligible.length?'MISSED THE LANE ENTRANCE':'SEND A SQUAD DOWN A SIDE LANE FIRST');return;}
@@ -2483,9 +2504,15 @@ function update(dt,now){
   carrier.t=clamp(carrier.t+(carrier.phase==='return'?-rate:rate),0,1);
   // The remaining scrum moves down its connected approach to meet the runner.
   ballM=lerp(carrier.startM,carrier.joinM,carrier.t);
+  const squad=flanked.find(f=>f.smuggling);
+  if(squad){
+   const stride=dt*23/squad.length;
+   const target=runnerTarget(squad,carrier);
+   squad.travel=clamp(squad.travel+clamp(target-squad.travel,-stride,stride),0,1);
+  }
   if(carrier.phase==='out'&&!carrier.checked&&carrier.t>=.51){
    carrier.checked=true;
-   const chaseNear=carrier.pursuit&&carrier.t-carrier.pursuit.progress<.31;
+   const chaseNear=carrier.pursuit&&squad&&Math.abs(runnerTarget(squad,carrier)-carrier.pursuit.progress)*squad.length<22;
     const odds=clamp((difficulty==='training'?.24:difficulty==='standard'?.31:difficulty==='hard'?.42:.52)
       -carrier.ids.length*.028+(enemySurgeUntil>elapsed?.10:0)
       +(chaseNear?.22:0)-(rallyUntil>elapsed?.12:0),.07,.72);
@@ -2506,7 +2533,7 @@ function update(dt,now){
   const own=2.7+Math.min(12,tapPower)*cfg.tapScale+(rallyUntil>elapsed?1.95:0)+(roarUntil>elapsed?1.85:0)+driveForce(driving)+(driveReleaseUntil>elapsed?releaseForce:0)+(counterUntil>elapsed&&!holding&&(driving||tapPower>1)?2.2:0)-nFlank*.27-(turningUntil>elapsed?.55:0);
   const junctionPressure=defendedJunction()?1.1:0;
   const defendersAway=aiBlock&&!activeBlockade()&&aiBlock.until>elapsed?-.65:0;
-  const chaseCost=Math.min(0.45,flanked.filter(f=>f.pursuit).length*.17);
+  const chaseCost=Math.min(.65,flanked.reduce((cost,f)=>cost+(f.pursuit?(f.decoy?.48:.17):0),0));
   const enemy=cfg.enemyBase+junctionPressure+defendersAway-chaseCost+opponentWave*.9+(enemySurgeUntil>elapsed?cfg.surge:0)+Math.max(0,ballM*sign/Math.max(1,sign===-1?totalUp:totalDown))*cfg.enemyAdvance+(tapPower>7?.65:0)+(nFlank>=6?.8:0);
   liveForceOwn=Math.max(.5,own);liveForceEnemy=Math.max(.5,enemy);
   const diff=liveForceOwn-liveForceEnemy-(rivalBreakUntil>elapsed?1.8:0)-(rivalShoutUntil>elapsed?.85:0);
@@ -2729,7 +2756,7 @@ function tick(now){
  requestAnimationFrame(tick);
 }
 
-const railActions=['counterBlock','rally','smuggle','flankLeft','flankRight','wind','boostRoar','boostDeep','boostExtra'];
+const railActions=['counterBlock','rally','fakeSmuggle','smuggle','flankLeft','flankRight','wind','boostRoar','boostDeep','boostExtra'];
 const bonusPriority=['rally','wind','boostDeep','smuggle','boostExtra','counterBlock','boostRoar'];
 let dockBonusTarget=null,dockBonusUntil=0,perfectNoticeUntil=0;
 function shakeCue(part){
@@ -2788,14 +2815,16 @@ function installDriveSpectrum(){
  $('driveMeter').style.setProperty('--drive-spectrum',`linear-gradient(90deg,${colors.join(',')})`);
 }
 function installControls(){
+ $('fakeSmuggle').onclick=fakeSmuggle;
  const tools=$('pitchTools');
- for(const id of ['boostRoar','counterBlock','rally','wind','boostDeep','boostExtra','smuggle','flankLeft','flankRight'])tools.append($(id));
+ for(const id of ['boostRoar','counterBlock','rally','wind','boostDeep','boostExtra','smuggle','fakeSmuggle','flankLeft','flankRight'])tools.append($(id));
  const labels={rally:'Rally',smuggle:'Smuggle Ba’',flankLeft:'Flank Left',flankRight:'Flank Right',wind:'Second Wind'};
- const families={counterBlock:'pressure',rally:'pressure',smuggle:'route',flankLeft:'route',
+ const families={counterBlock:'pressure',rally:'pressure',smuggle:'route',fakeSmuggle:'route',flankLeft:'route',
   flankRight:'route',wind:'recovery',boostRoar:'pressure',boostDeep:'boost',boostExtra:'boost'};
  const icons={
   counterBlock:'M12 22s7-3 7-10V5l-7-3-7 3v7c0 7 7 10 7 10Zm-3-10 2 2 4-4',
   rally:'M5 21V4m0 1c5-5 9 4 14 0v10c-5 4-9-5-14 0',
+  fakeSmuggle:'M3 12h8m0 0 7-7m-7 7 7 7m-1-14h4v4m-4 10h4v-4',
   smuggle:'M9 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm4 1h8m-4-4 4 4-4 4M3 20c0-4 2-6 6-6',
   flankLeft:'M15 20v-6a5 5 0 0 0-5-5H4m4-4L4 9l4 4',
   flankRight:'M9 20v-6a5 5 0 0 1 5-5h6m-4-4 4 4-4 4',
@@ -2848,6 +2877,7 @@ if(new URLSearchParams(location.search).has('qa'))window.__baQA={
  getChoices(direction){return makeTurnChoices(true,direction).left||makeTurnChoices(true,direction).right;},
  stageGoal(team){if(gameState!=='playing')return;ballM=team==='up'?-totalUp:totalDown;beginGoal(team);updateHUD();},
  huddlePositions(){return scrumBodies.map(group=>group.map(body=>body&&[body.s-ballM,body.n]));},
+ runnerState(){return flanked.map(f=>({decoy:f.decoy,travel:f.travel,target:f.smuggling&&activeCarrier?runnerTarget(f,activeCarrier):null,chase:f.pursuit?.progress}));},
  bodyInfo(){return {contacts:scrumContacts,bodies:scrumBodies.flat().filter(Boolean).length,laneWidth:roadWidthAt(ballM),routeAudit};},
   useBoost(k){return useBoost(k)},
   buyBoost(k){return buyBooster(k)},
