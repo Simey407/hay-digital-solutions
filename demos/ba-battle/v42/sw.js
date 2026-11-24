@@ -2,7 +2,7 @@
 
 const scope = new URL(self.registration.scope);
 const cachePrefix = `ba-battle:${scope.href}:`;
-const cacheName = cachePrefix + 'v42.10';
+const cacheName = cachePrefix + 'v42.11';
 const appFiles = ['index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png']
   .map(file => new URL(file, scope));
 const page = appFiles[0].href;

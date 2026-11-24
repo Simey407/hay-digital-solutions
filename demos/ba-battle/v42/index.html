@@ -1074,7 +1074,7 @@ function streetOffset(base,t,n){
 function closest(g,p,pred){let best=-1,dist=Infinity;for(let i=0;i<g.nodes.length;i++){if(pred&&!pred(i))continue;let d=hypot(g.nodes[i].x-p.x,g.nodes[i].y-p.y);if(d<dist){dist=d;best=i}}return best}
 function nearestNamed(g,pattern,target){const ids=new Set();for(const e of g.edges)if(pattern.test(e.name)){ids.add(e.a);ids.add(e.b)}return closest(g,target,ids.size?i=>ids.has(i):null)}
 class Heap{constructor(){this.h=[]}push(x){let a=this.h,i=a.length;a.push(x);while(i>0){let k=(i-1)>>1;if(a[k][0]<=x[0])break;a[i]=a[k];i=k}a[i]=x}pop(){let a=this.h;if(!a.length)return null;let ans=a[0],last=a.pop();if(a.length){let i=0;while(i*2+1<a.length){let c=i*2+1;if(c+1<a.length&&a[c+1][0]<a[c][0])c++;if(last[0]<=a[c][0])break;a[i]=a[c];i=c}a[i]=last}return ans}get length(){return this.h.length}}
-function findPath(g,start,goal,{penalise=null,block=null,maxVisited=25000}={}){if(start<0||goal<0)return [];const D=new Float64Array(g.nodes.length);D.fill(Infinity);const prev=new Int32Array(g.nodes.length);prev.fill(-1);const q=new Heap();D[start]=0;q.push([0,start]);let visits=0;while(q.length&&visits++<maxVisited){const [v,u]=q.pop();if(v>D[u]+.001)continue;if(u===goal)break;for(const e of g.adj[u]){if(block&&block.has(e.eid))continue;let extra=penalise&&penalise.has(e.eid)?8:1;let kind=e.kind,road=kind==='primary'?1.5:kind==='secondary'?1.35:kind==='tertiary'?1.22:kind==='steps'?1.8:kind==='pedestrian'?1:kind==='footway'?1.06:1.12;let nd=v+e.len*extra*road;if(nd<D[e.to]){D[e.to]=nd;prev[e.to]=u;q.push([nd,e.to])}}}if(!Number.isFinite(D[goal]))return [];let arr=[goal],at=goal;while(at!==start){at=prev[at];if(at<0)return [];arr.push(at);if(arr.length>5000)return []}return arr.reverse()}
+function findPath(g,start,goal,{penalise=null,block=null,maxVisited=25000,streetBias=null}={}){if(start<0||goal<0)return [];const D=new Float64Array(g.nodes.length);D.fill(Infinity);const prev=new Int32Array(g.nodes.length);prev.fill(-1);const q=new Heap();D[start]=0;q.push([0,start]);let visits=0;while(q.length&&visits++<maxVisited){const [v,u]=q.pop();if(v>D[u]+.001)continue;if(u===goal)break;for(const e of g.adj[u]){if(block&&block.has(e.eid))continue;let extra=penalise&&penalise.has(e.eid)?8:1;let kind=e.kind,road=kind==='primary'?1.5:kind==='secondary'?1.35:kind==='tertiary'?1.22:kind==='steps'?1.8:kind==='pedestrian'?1:kind==='footway'?1.06:1.12;let nd=v+e.len*extra*road*(streetBias?streetBias(g.nodes[u],g.nodes[e.to],e.name):1);if(nd<D[e.to]){D[e.to]=nd;prev[e.to]=u;q.push([nd,e.to])}}}if(!Number.isFinite(D[goal]))return [];let arr=[goal],at=goal;while(at!==start){at=prev[at];if(at<0)return [];arr.push(at);if(arr.length>5000)return []}return arr.reverse()}
 function taggedRoute(g,team,origin){
  const end=g.osmIds.get(anchors[team]);
  const hints=team==='up'
@@ -1214,6 +1214,23 @@ function rebuildAfterTurn(newIds,sign,oldBall,fork){
  totalUp=newOrigin;totalDown=cum.at(-1)-newOrigin;ballM=clamp(newBall,-totalUp,totalDown);
  routeAudit=inspectStreetRoute();
 }
+const traditionalStreet=/^(Junction Road|Main Street)$/i;
+function turnStreetWeight(from,to,name){
+ if(traditionalStreet.test(name))return .72;
+ return to.x>from.x+1?1.42:1;
+}
+function turnRouteStats(path){
+ const first=graph.nodes[path[0]],last=graph.nodes[path.at(-1)];
+ const eastLimit=Math.max(first.x,last.x);
+ let eastExcursion=0,corridorMeters=0;
+ for(let i=1;i<path.length;i++){
+  const node=graph.nodes[path[i]];
+  eastExcursion=Math.max(eastExcursion,node.x-eastLimit);
+  const edge=graph.adj[path[i-1]].find(e=>e.to===path[i]);
+  if(edge&&traditionalStreet.test(edge.name))corridorMeters+=edge.len;
+ }
+ return {eastExcursion,corridorMeters};
+}
 function makeTurnChoices(ignoreCooldown=false, direction=ownerSign(),maxAhead=210){
  if(!graph||gameState!=='playing'||(!ignoreCooldown&&elapsed<turnCooldownUntil))return {left:null,right:null};
  const sign=direction,ids=spine.map(p=>p.id),ordered=sign===1?ids:ids.slice().reverse();
@@ -1240,7 +1257,7 @@ function makeTurnChoices(ignoreCooldown=false, direction=ownerSign(),maxAhead=21
        if(forwardMeters<28)continue;
        if(forwardMeters>400)break;
        if(--searchBudget<0)break;
-       const tail=findPath(graph,first.to,ordered[j],{block:forbidden,maxVisited:4500});
+       const tail=findPath(graph,first.to,ordered[j],{block:forbidden,maxVisited:4500,streetBias:turnStreetWeight});
        if(tail.length<2||tail.includes(u))continue;
        const path=[u,...tail];if(new Set(path).size!==path.length)continue;
        const routeLen=pathLength(path,graph);
@@ -1250,10 +1267,12 @@ function makeTurnChoices(ignoreCooldown=false, direction=ownerSign(),maxAhead=21
        if(path.slice(1,-1).some(id=>ids.includes(id)))continue;
        const originIndex=ordered.indexOf(graph.osmIds.get(anchors.origin));
        if(i<originIndex&&j>originIndex)continue;
-       const cost=ahead*2.0+Math.max(0,routeLen-forwardMeters)*.10+Math.abs(150-forwardMeters)*.035;
+       const street=turnRouteStats(path);
+       const cost=ahead*2+Math.max(0,routeLen-forwardMeters)*.10+Math.abs(150-forwardMeters)*.035
+        +street.eastExcursion*.9-Math.min(150,street.corridorMeters)*.48;
        if(cost<rated[which]&&(maxAhead>32||!result[which]||d[i]===result[which].dist)){
          rated[which]=cost;
-         result[which]={which,startIndex:i,endIndex:j,path,dist:d[i],ahead,name:first.name||graph.adj[first.to].find(e=>e.name)?.name||'Unnamed lane',length:routeLen};
+         result[which]={which,startIndex:i,endIndex:j,path,dist:d[i],ahead,...street,name:first.name||graph.adj[first.to].find(e=>e.name)?.name||'Unnamed lane',length:routeLen};
        }
      }
    }
@@ -1273,10 +1292,12 @@ function planRivalOrder(){
  // Do not pile a forced turn onto a side that is already being decisively driven back.
  if(ballM*enemySign<-65){nextRivalOrderAt=elapsed+9;return;}
  const choices=makeTurnChoices(true,enemySign);
- const candidates=[choices.left,choices.right].filter(c=>c&&c.ahead>=10&&c.ahead<=135);
+ const candidates=[choices.left,choices.right].filter(c=>c&&c.ahead>=10&&c.ahead<=135
+  && (c.eastExcursion<=22||c.corridorMeters>=35));
  if(!candidates.length){nextRivalOrderAt=elapsed+9;return;}
  // The AI commits to one genuinely connected street branch. The route is not changed yet.
- const chosen=candidates[(Math.floor(elapsed/9)+rivalTurnsTaken)%candidates.length];
+ const score=c=>Math.min(c.corridorMeters,150)*.7-c.eastExcursion*2-c.ahead*.15;
+ const chosen=candidates.sort((a,b)=>score(b)-score(a))[0];
  rivalOrder={...chosen,direction:enemySign,issuedAt:elapsed,expiresAt:elapsed+22};
  nextRivalOrderAt=elapsed+48;
  notify('RIVALS ORDER '+chosen.which.toUpperCase()+' — SEAL '+turnLabel(chosen).toUpperCase()+'!');
@@ -2874,6 +2895,7 @@ if(new URLSearchParams(location.search).has('qa'))window.__baQA={
  forceThreat(){nextRivalOrderAt=elapsed;planRivalOrder();return window.__baDebug()},
  forceGround(m){ballM=clamp(m,-totalUp,totalDown);return window.__baDebug()},
  trySeal(){blockRun();return window.__baDebug()},
+ routeChoices(direction){return makeTurnChoices(true,direction);},
  getChoices(direction){return makeTurnChoices(true,direction).left||makeTurnChoices(true,direction).right;},
  stageGoal(team){if(gameState!=='playing')return;ballM=team==='up'?-totalUp:totalDown;beginGoal(team);updateHUD();},
  huddlePositions(){return scrumBodies.map(group=>group.map(body=>body&&[body.s-ballM,body.n]));},
