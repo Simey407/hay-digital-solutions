@@ -75,10 +75,14 @@ def connect(path):
     return db
 
 
+def valid_nickname(name):
+    return (isinstance(name, str) and name == name.strip()
+            and bool(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9 _’'-]{1,19}", name)))
+
+
 def nickname(data):
     name = data.get('nickname', '')
-    require(isinstance(name, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9 _’'-]{1,19}", name)
-            and name == name.strip(), 'Use 2–20 letters, numbers, spaces or simple punctuation.')
+    require(valid_nickname(name), 'Use 2–20 letters, numbers, spaces or simple punctuation.')
     return name
 
 
@@ -180,9 +184,9 @@ class Handler(BaseHTTPRequestHandler):
                     'Enter a password of 12–128 characters.')
         if path in ('/api/signup', '/api/signin'):
             username = data.get('username', '')
-            require(isinstance(username, str) and re.fullmatch('[A-Za-z0-9_]{3,24}', username),
-                    'Use 3–24 letters, numbers or underscores for your username.')
             if path == '/api/signup':
+                require(isinstance(username, str) and re.fullmatch('[A-Za-z0-9_]{3,24}', username),
+                        'Use 3–24 letters, numbers or underscores for your username.')
                 team = data.get('team')
                 require(team in ('up', 'down'), 'Choose your permanent side.')
                 name = nickname(data)
@@ -191,10 +195,16 @@ class Handler(BaseHTTPRequestHandler):
                 account = db.execute('''INSERT INTO accounts(username,nickname,password,salt,team)
                     VALUES(?,?,?,?,?)''', (username, name, hash_password(password, salt), salt, team)).lastrowid
             else:
-                existing = db.execute('SELECT * FROM accounts WHERE username=?', (username,)).fetchone()
+                if 'nickname' in data and 'username' not in data:
+                    tag = data['nickname']
+                    existing = (db.execute('SELECT * FROM accounts WHERE nickname=?', (tag,)).fetchone()
+                                if valid_nickname(tag) else None)
+                else:
+                    existing = (db.execute('SELECT * FROM accounts WHERE username=?', (username,)).fetchone()
+                                if isinstance(username, str) else None)
                 computed = hash_password(password, existing['salt'] if existing else bytes(16))
                 require(existing and hmac.compare_digest(computed, existing['password']),
-                        'Username or password is incorrect.', 401)
+                        'Sign-in details are incorrect.', 401)
                 account = existing['id']
             raw = secrets.token_urlsafe(32)
             db.execute('DELETE FROM sessions WHERE token=? OR expires<=?', (token, now))

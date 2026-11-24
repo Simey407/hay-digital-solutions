@@ -2196,7 +2196,7 @@ function openAccount(view=accountProfile?'profile':'signin'){
  const section=$('accountContent');
  section.dataset.view=view;
  const password=(auto)=>'<label>Password<input name="password" type="password" autocomplete="'+auto+'" minlength="12" maxlength="128" required></label>';
- const nickname='<label>Public nickname<input name="nickname" autocomplete="nickname" minlength="2" maxlength="20" required></label>';
+ const nickname='<label>Public gamer tag<input name="nickname" autocomplete="nickname" minlength="2" maxlength="20" required></label>';
  const choices=(name,options)=>'<select name="'+name+'" required>'+Object.entries(options).map(([key,label])=>'<option value="'+key+'">'+label+'</option>').join('')+'</select>';
  if(view==='boards'){
   section.innerHTML='<h2>Public leaderboards</h2><label>Board '+choices('metric',boardLabels)+'</label><p class="subtle">Beta · browser-reported matches</p><ol class="board-list"></ol><p role="status"></p><button class="secondary" type="button">Local leaderboard</button>';
@@ -2231,6 +2231,7 @@ function openAccount(view=accountProfile?'profile':'signin'){
  let fields;
  if(auth){
   fields='<label>Private username<input name="username" autocomplete="username" autocapitalize="none" pattern="[A-Za-z0-9_]{3,24}" required></label>';
+  if(view==='signin')fields='<label>Sign in with '+choices('method',{nickname:'Gamer tag',username:'Private username'})+'</label><label><span id="signinLabel">Gamer tag</span><input name="nickname" autocomplete="username" autocapitalize="none" maxlength="20" required></label>';
   if(view==='signup')fields+=nickname+'<label>Permanent side '+choices('team',{'':'Choose your side',up:'Uppies',down:'Doonies'})+'</label><label class="account-check"><input type="checkbox" required> I understand my side is permanent for this account.</label>';
   fields+=password(view==='signup'?'new-password':'current-password');
  }else if(view==='profile'){
@@ -2241,6 +2242,17 @@ function openAccount(view=accountProfile?'profile':'signin'){
  const action={signup:'Create account',signin:'Sign in',profile:'Save profile',delete:'Permanently delete account'}[view];
  section.innerHTML='<h2>'+title+'</h2><form>'+fields+'<p role="status"></p><button class="primary" type="submit">'+action+'</button></form>';
  const form=section.querySelector('form'), status=form.querySelector('[role=status]'), submit=form.querySelector('button');
+ if(view==='signin'){
+  const method=form.elements.method,input=form.elements.nickname;
+  method.onchange=()=>{
+   const username=method.value==='username';
+   input.name=method.value;
+   input.maxLength=username?24:20;
+   input.value='';
+   $('signinLabel').textContent=username?'Private username':'Gamer tag';
+   status.textContent='';
+  };
+ }
  function link(label,handler){
   const button=document.createElement('button');
   button.textContent=label;
@@ -2267,7 +2279,9 @@ function openAccount(view=accountProfile?'profile':'signin'){
   submit.disabled=true;
   status.textContent='';
   try{
-   const result=await api(view,Object.fromEntries(new FormData(form)));
+   const data=new FormData(form);
+   data.delete('method');
+   const result=await api(view,Object.fromEntries(data));
    acceptProfile(result.profile||null);
    if(!form.isConnected)return;
    if(view==='profile')status.textContent='Profile saved.';
